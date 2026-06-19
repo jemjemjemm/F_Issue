@@ -12,6 +12,46 @@ const formatNumber = value => Number(value || 0).toLocaleString("ko-KR");
 const portalNames = {naver: "네이버", daum: "다음", google: "구글"};
 const gradeTitles = {A: "주요 종합지·경제지·통신사", B: "중견 경제지·전문지·방송사", C: "기타매체"};
 
+function formatShortDate(dateString) {
+  if (!dateString) return "";
+  const match = String(dateString).match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (!match) return dateString;
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  if (!month || month > 12 || !day || day > 31) return dateString;
+  return `'${match[1].slice(-2)}.${month}.${day}.`;
+}
+
+function formatReportTitle(baseDate, slot) {
+  const slotLabel = slot === "evening" ? "Evening Report" : "Morning Report";
+  return `${formatShortDate(baseDate)} ${slotLabel}`;
+}
+
+function formatShortDateTime(value) {
+  if (!value) return "";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Seoul", year: "numeric", month: "2-digit", day: "2-digit",
+    hour: "2-digit", minute: "2-digit", hour12: false
+  }).formatToParts(date);
+  const map = Object.fromEntries(parts.map(part => [part.type, part.value]));
+  return `'${map.year.slice(-2)}.${Number(map.month)}.${Number(map.day)}. ${map.hour}:${map.minute}`;
+}
+
+function getGradeCount(reportData, grade) {
+  return Number(reportData?.grade_counts?.[grade] ?? groupArticlesByGradeAndSource(reportData?.articles || [])[grade].length);
+}
+
+function getTotalCount(reportData) {
+  return Number(reportData?.total_deduped_count ?? reportData?.articles?.length ?? 0);
+}
+
+function renderGradeSummary(reportData) {
+  return `<div class="grade-summary">총 ${formatNumber(getTotalCount(reportData))}건, A ${formatNumber(getGradeCount(reportData, "A"))}건, B ${formatNumber(getGradeCount(reportData, "B"))}건, C ${formatNumber(getGradeCount(reportData, "C"))}건</div>
+    <div class="grade-caption"><div>A: ${gradeTitles.A}</div><div>B: ${gradeTitles.B}</div><div>C: ${gradeTitles.C}</div></div>`;
+}
+
 function getTodayKSTDateString() {
   return new Intl.DateTimeFormat("en-CA", {
     timeZone: "Asia/Seoul", year: "numeric", month: "2-digit", day: "2-digit"
@@ -20,12 +60,7 @@ function getTodayKSTDateString() {
 
 function displayDateTime(value) {
   if (!value) return "확인 불가";
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return value;
-  return new Intl.DateTimeFormat("ko-KR", {
-    timeZone: "Asia/Seoul", month: "numeric", day: "numeric",
-    hour: "2-digit", minute: "2-digit", hour12: false
-  }).format(date);
+  return formatShortDateTime(value);
 }
 
 async function fetchJSON(path) {
@@ -67,9 +102,8 @@ function renderArticle(article) {
     : `<span class="article-link">${title}</span>`;
   const portals = (article.portals || []).map(item => portalNames[item] || item).join(" · ") || "확인 불가";
   const queries = (article.queries || []).join(" · ") || "확인 불가";
-  const status = article.quality_status || "review";
   const snippet = article.snippet ? `<details class="snippet"><summary>검색 결과 문맥 보기</summary><p>${escapeHTML(article.snippet)}</p></details>` : "";
-  return `<li class="article-item"><span class="badge status-${escapeHTML(status)}">${escapeHTML(article.status_label || "검토필요")}</span><div class="article-main">${titleMarkup}<div class="article-meta"><span>${escapeHTML(displayDateTime(article.published_at))}</span><span>발견: ${escapeHTML(portals)}</span><span>검색어: ${escapeHTML(queries)}</span></div>${article.status_reason ? `<p class="article-reason">${escapeHTML(article.status_reason)}</p>` : ""}${snippet}</div></li>`;
+  return `<li class="article-item"><div class="article-main">${titleMarkup}<div class="article-meta"><span>${escapeHTML(article.source_normalized || article.source || "매체 미상")}</span><span>${escapeHTML(displayDateTime(article.published_at))}</span><span>발견: ${escapeHTML(portals)}</span><span>검색어: ${escapeHTML(queries)}</span></div>${snippet}</div></li>`;
 }
 
 function renderArticlesBySource(articles) {
@@ -105,29 +139,23 @@ function renderGradeSection(grade, title, articles) {
 function renderSingleReportBody(reportData) {
   const articles = reportData.articles || [];
   const grouped = groupArticlesByGradeAndSource(articles);
-  return `<div class="report-summary-mini">
-      <span>전체 <strong>${formatNumber(reportData.total_deduped_count ?? articles.length)}건</strong></span>
-      <span>정상 <strong>${formatNumber(reportData.total_ok_count)}건</strong></span>
-      <span>검토필요 <strong>${formatNumber(reportData.total_review_count)}건</strong></span>
-      <span>제외 <strong>${formatNumber(reportData.total_excluded_count)}건</strong></span>
-    </div>
-    ${renderGradeSection("A", gradeTitles.A, grouped.A)}
+  return `${renderGradeSection("A", gradeTitles.A, grouped.A)}
     ${renderGradeSection("B", gradeTitles.B, grouped.B)}
     ${renderGradeSection("C", gradeTitles.C, grouped.C)}`;
 }
 
 function formatReportPeriod(reportData, meta) {
-  return reportData.period_label || meta.period || `${displayDateTime(reportData.period_start)} ~ ${displayDateTime(reportData.period_end)}`;
+  const start = reportData.period_start || meta.period_start;
+  const end = reportData.period_end || meta.period_end;
+  return start && end ? `${formatShortDateTime(start)} ~ ${formatShortDateTime(end)}` : "";
 }
 
 function renderReportAccordionItem(meta, reportData, openByDefault = false) {
-  const slotLabel = meta.slot === "morning" ? "Morning" : "Evening";
-  const count = reportData.total_deduped_count ?? reportData.articles?.length ?? 0;
   const bodyId = `report-accordion-${escapeHTML(meta.base_date)}-${escapeHTML(meta.slot)}`;
   return `<article class="report-accordion-item ${openByDefault ? "is-open" : ""}" data-report-slot="${escapeHTML(meta.slot)}">
     <button type="button" class="report-accordion-header" data-toggle-report="${escapeHTML(meta.slot)}" aria-expanded="${openByDefault}" aria-controls="${bodyId}">
-      <span class="accordion-title"><strong>${slotLabel}</strong><span>${formatNumber(count)}건</span></span>
-      <small>${escapeHTML(formatReportPeriod(reportData, meta))}</small>
+      <div class="accordion-title"><strong class="report-title">${escapeHTML(formatReportTitle(reportData.base_date || meta.base_date, meta.slot))}</strong>${renderGradeSummary(reportData)}</div>
+      <small class="report-meta">${escapeHTML(formatReportPeriod(reportData, meta))}</small>
       <span class="accordion-arrow">${openByDefault ? "숨기기" : "펼치기"}</span>
     </button>
     <div id="${bodyId}" class="report-accordion-body" ${openByDefault ? "" : "hidden"}>${renderSingleReportBody(reportData)}</div>
@@ -179,35 +207,30 @@ function bindReturnTodayButton() {
 
 function renderSelectedDateHeader(baseDate, loadedReports) {
   const summary = loadedReports.map(({meta, data}) => `${meta.slot === "morning" ? "Morning" : "Evening"} ${formatNumber(data.total_deduped_count ?? data.articles?.length)}건`).join(" / ");
-  $("#report-slot").textContent = baseDate === state.today ? "Today" : "Past";
-  $("#report-period-title").textContent = `선택 날짜: ${baseDate}`;
+  $("#report-slot").textContent = "";
+  $("#report-period-title").textContent = `선택 날짜: ${formatShortDate(baseDate)}`;
   $("#period-range").textContent = summary ? `해당 날짜 리포트: ${summary}` : "해당 날짜의 리포트가 없습니다.";
   const latestGenerated = loadedReports.map(item => item.data.generated_at).filter(Boolean).sort().at(-1);
   $("#generated-at").textContent = latestGenerated ? `업데이트 ${displayDateTime(latestGenerated)}` : "";
   $("#report-selector-root").innerHTML = summary
-    ? `<p class="selected-report-summary"><strong>${escapeHTML(baseDate)}</strong><span>${escapeHTML(summary)}</span></p>`
-    : `<p class="quiet-message"><strong>${escapeHTML(baseDate)}</strong> · 해당 날짜의 리포트가 없습니다.</p>`;
+    ? `<p class="selected-report-summary"><strong>${escapeHTML(formatShortDate(baseDate))}</strong><span>${escapeHTML(summary)}</span></p>`
+    : `<p class="quiet-message"><strong>${escapeHTML(formatShortDate(baseDate))}</strong> · 해당 날짜의 리포트가 없습니다.</p>`;
 }
 
 function renderSummaryForReports(baseDate, loadedReports) {
-  const totals = loadedReports.reduce((sum, {data}) => {
-    sum.all += Number(data.total_deduped_count || 0);
-    sum.ok += Number(data.total_ok_count || 0);
-    sum.review += Number(data.total_review_count || 0);
-    sum.excluded += Number(data.total_excluded_count || 0);
-    return sum;
-  }, {all: 0, ok: 0, review: 0, excluded: 0});
-  const cards = [["전체", totals.all], ["정상", totals.ok], ["검토필요", totals.review], ["제외", totals.excluded]];
-  $("#summary-grid").innerHTML = cards.map(([label, count]) => `<div class="summary-card"><span>${label}</span><strong>${formatNumber(count)}<small>건</small></strong></div>`).join("");
-  $("#portal-summary").innerHTML = loadedReports.length
-    ? `<strong>${escapeHTML(baseDate)}</strong><span class="portal-chip">리포트 <strong>${loadedReports.length}개</strong></span>`
-    : `<p class="quiet-message">${baseDate === state.today ? "오늘 생성된 리포트가 아직 없습니다." : "해당 날짜의 리포트가 없습니다."}</p>`;
+  const combined = loadedReports.reduce((summary, {data}) => {
+    summary.total_deduped_count += getTotalCount(data);
+    for (const grade of ["A", "B", "C"]) summary.grade_counts[grade] += getGradeCount(data, grade);
+    return summary;
+  }, {total_deduped_count: 0, grade_counts: {A: 0, B: 0, C: 0}});
+  $("#summary-grid").innerHTML = renderGradeSummary(combined);
+  $("#portal-summary").hidden = true;
 }
 
 function renderDateReportsAccordion(baseDate, loadedReports, mode) {
   const root = $("#report-root");
   if (!loadedReports.length) {
-    root.innerHTML = `<section class="empty-report-card"><h2>${escapeHTML(baseDate)} 리포트</h2><p>${baseDate === state.today ? "오늘 생성된 리포트가 아직 없습니다." : "해당 날짜의 리포트가 없습니다."}</p>${mode === "past" ? `<button class="return-today-btn" type="button" data-return-today>오늘 기사 보기</button>` : ""}</section>`;
+    root.innerHTML = `<section class="empty-report-card"><h2>${escapeHTML(formatShortDate(baseDate))}</h2><p>${baseDate === state.today ? "오늘 생성된 리포트가 아직 없습니다." : "해당 날짜의 리포트가 없습니다."}</p>${mode === "past" ? `<button class="return-today-btn" type="button" data-return-today>오늘 기사 보기</button>` : ""}</section>`;
     bindReturnTodayButton();
     return;
   }
@@ -217,7 +240,7 @@ function renderDateReportsAccordion(baseDate, loadedReports, mode) {
     .map(({meta, data}) => renderReportAccordionItem(meta, data, mode === "today" && meta.slot === latestSlot))
     .join("");
   root.innerHTML = `<section class="selected-date-report">
-    <div class="selected-date-header"><div><p class="eyebrow dark">FULL COVERAGE</p><h2>${escapeHTML(baseDate)} 리포트</h2></div>${mode === "past" ? `<button class="return-today-btn" type="button" data-return-today>오늘 기사 보기</button>` : ""}</div>
+    <div class="selected-date-header"><div><p class="eyebrow dark">FULL COVERAGE</p><h2>${escapeHTML(formatShortDate(baseDate))}</h2></div>${mode === "past" ? `<button class="return-today-btn" type="button" data-return-today>오늘 기사 보기</button>` : ""}</div>
     ${items}
   </section>`;
   bindReportAccordionEvents();
@@ -228,8 +251,8 @@ function renderDateReportsAccordion(baseDate, loadedReports, mode) {
 function renderCalendarReportSelector(baseDate, reports) {
   const summary = reports.map(report => `${report.slot === "morning" ? "Morning" : "Evening"} ${formatNumber(report.total_deduped_count)}건`).join(" / ");
   $("#calendar-report-selector").innerHTML = summary
-    ? `<p class="selector-title">${escapeHTML(baseDate)} 선택됨</p><p class="quiet-message">${escapeHTML(summary)} · 위 기사 영역에 표시됩니다.</p>`
-    : `<p class="quiet-message"><strong>${escapeHTML(baseDate)}</strong> · 해당 날짜의 리포트가 없습니다.</p>`;
+    ? `<p class="selector-title">${escapeHTML(formatShortDate(baseDate))} 선택됨</p><p class="quiet-message">${escapeHTML(summary)} · 위 기사 영역에 표시됩니다.</p>`
+    : `<p class="quiet-message"><strong>${escapeHTML(formatShortDate(baseDate))}</strong> · 해당 날짜의 리포트가 없습니다.</p>`;
 }
 
 function markSelectedCalendarDate(baseDate) {

@@ -17,6 +17,12 @@ from utils_time import get_period, is_in_period, now_kst, parse_datetime, period
 ROOT = Path(__file__).resolve().parents[1]
 
 
+def format_report_title(base_date: str, slot: str) -> str:
+    parsed = datetime.strptime(base_date, "%Y-%m-%d")
+    slot_label = "Evening Report" if slot == "evening" else "Morning Report"
+    return f"'{parsed:%y}.{parsed.month}.{parsed.day}. {slot_label}"
+
+
 def process_articles(raw_items: list[dict], start: datetime, end: datetime) -> list[dict]:
     eligible = [item for item in raw_items if not item.get("published_at") or is_in_period(item.get("published_at"), start, end)]
     articles = []
@@ -54,7 +60,7 @@ def build_report(raw: dict, base_date: str, slot: str) -> dict:
     grade_counts = Counter(item["grade"] for item in articles)
     query_counts = Counter(query for item in articles for query in item.get("queries", []))
     return {
-        "title": "F-Issue Report", "subtitle": "유가담합 키워드 뉴스 전수 모니터링",
+        "title": "F-Issue Report", "subtitle": "뉴스 모니터링",
         "base_date": base_date, "slot": slot,
         "period_start": start.isoformat(), "period_end": end.isoformat(),
         "period_label": period_label(start, end), "generated_at": now_kst().isoformat(),
@@ -73,7 +79,7 @@ def report_index_entry(report: dict) -> dict:
     stem = f"{report['base_date']}-{report['slot']}"
     return {
         "base_date": report["base_date"], "slot": report["slot"],
-        "label": f"{report['base_date']} {report['slot'].title()}", "period": report["period_label"],
+        "label": format_report_title(report["base_date"], report["slot"]), "period": report["period_label"],
         "html_path": f"reports/{stem}.html", "json_path": f"data/reports/{stem}.json",
         "period_start": report["period_start"], "period_end": report["period_end"],
         "total_deduped_count": report["total_deduped_count"], "total_ok_count": report["total_ok_count"],
@@ -102,10 +108,12 @@ def write_report_html(report: dict) -> None:
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(f"""<!doctype html>
 <html lang=\"ko\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">
-<title>{report['label'] if 'label' in report else stem} | F-Issue Report</title>
-<link rel=\"canonical\" href=\"../index.html?report=data/reports/{stem}.json\">
-<script>location.replace('../index.html?report='+encodeURIComponent('data/reports/{stem}.json'));</script></head>
-<body><p><a href=\"../index.html?report=data/reports/{stem}.json\">F-Issue Report에서 이 리포트 열기</a></p></body></html>""", encoding="utf-8")
+<title>{format_report_title(report['base_date'], report['slot'])} | F-Issue Report</title>
+<script>
+const stem = location.pathname.split('/').pop().replace(/\\.html$/, '');
+location.replace('../index.html?report=' + encodeURIComponent('data/reports/' + stem + '.json'));
+</script></head>
+<body><p><a href=\"../index.html\">F-Issue Report에서 이 리포트 열기</a></p></body></html>""", encoding="utf-8")
 
 
 def main() -> int:

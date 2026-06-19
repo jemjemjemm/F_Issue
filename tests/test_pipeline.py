@@ -7,7 +7,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
 from dedupe import canonicalize_url, deduplicate, normalize_title
-from build_report import build_report, process_articles
+from build_report import build_report, format_report_title, process_articles
 from media_grade import get_media_grade, normalize_source
 from quality_filter import assess_quality
 from utils_time import KST, get_period, is_in_period
@@ -70,6 +70,10 @@ class ClassificationTests(unittest.TestCase):
 
 
 class ReportTests(unittest.TestCase):
+    def test_report_title_uses_short_date_and_slot(self):
+        self.assertEqual(format_report_title("2026-06-19", "morning"), "'26.6.19. Morning Report")
+        self.assertEqual(format_report_title("2026-07-03", "evening"), "'26.7.3. Evening Report")
+
     def test_unknown_publication_time_is_retained_for_review(self):
         start, end = get_period("2026-06-19", "morning")
         item = {
