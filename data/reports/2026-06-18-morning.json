@@ -1,12 +1,12 @@
 {
   "title": "F-Issue Report",
-  "subtitle": "F-Issue Report",
+  "subtitle": "뉴스 모니터링",
   "base_date": "2026-06-18",
   "slot": "morning",
   "period_start": "2026-06-17T17:00:00+09:00",
   "period_end": "2026-06-18T08:00:00+09:00",
   "period_label": "2026-06-17 17:00 ~ 2026-06-18 08:00",
-  "generated_at": "2026-06-19T16:45:30.569438+09:00",
+  "generated_at": "2026-06-19T18:01:08.709649+09:00",
   "keywords": [
     "유가담합",
     "유가 담합",
@@ -23,14 +23,14 @@
     "공정거래위원회 정유사 담합"
   ],
   "total_raw_count": 390,
-  "total_deduped_count": 22,
+  "total_deduped_count": 10,
   "total_ok_count": 0,
-  "total_review_count": 19,
-  "total_excluded_count": 3,
+  "total_review_count": 10,
+  "total_excluded_count": 12,
   "grade_counts": {
-    "A": 4,
+    "A": 2,
     "B": 1,
-    "C": 17
+    "C": 7
   },
   "portal_counts": {
     "naver": 130,
@@ -38,10 +38,9 @@
     "google": 0
   },
   "query_counts": {
-    "공정거래위원회 정유사 담합": 10,
-    "공정위 유가 담합": 11,
-    "유류가격 담합": 2,
-    "정유업계 담합": 2
+    "공정거래위원회 정유사 담합": 5,
+    "공정위 유가 담합": 6,
+    "정유업계 담합": 1
   },
   "collection_warnings": [
     {
@@ -165,36 +164,6 @@
   "telegram_alert_log": [],
   "articles": [
     {
-      "title": "브라질산 계란 수입·돼지·닭고기 할당관세...여름철 먹거리 물가 잡는...",
-      "url": "https://www.sedaily.com/article/20052035?ref=naver",
-      "source": "서울경제",
-      "published_at": "",
-      "snippet": "이달 8~9일 관계부처 합동 숙박업소 위생·가격담합 집중점검에 이어 숙박업 자율요금 신고제 도입을 위한 법률도 개정한다. 정당한 사유 없이 일방적으로 예약을 취소할 경우 소비자에게 계약금과 취소된 숙박요금의 200%를 배상하는 내용의 공정위 고시 개정도 이달 중 추진한다.",
-      "collected_at": "2026-06-19T16:45:12.190685+09:00",
-      "normalized_title": "브라질산 계란 수입·돼지·닭고기 할당관세...여름철 먹거리 물가 잡는...",
-      "source_normalized": "서울경제",
-      "duplicate_key": "서울경제::브라질산 계란 수입·돼지·닭고기 할당관세...여름철 먹거리 물가 잡는...",
-      "portals": [
-        "naver"
-      ],
-      "queries": [
-        "공정위 유가 담합"
-      ],
-      "duplicate_count": 0,
-      "canonical_url": "https://www.sedaily.com/article/20052035?ref=naver",
-      "id": "5fad7393af74306c",
-      "grade": "A",
-      "published_at_status": "unknown",
-      "matched_keywords": [
-        "공정위",
-        "담합",
-        "가격담합"
-      ],
-      "quality_status": "review",
-      "status_label": "검토필요",
-      "status_reason": "발행시각 확인 불가 · 유가담합 관련성 확인 필요"
-    },
-    {
       "title": "아시아경제",
       "url": "https://v.daum.net/channel/90/home",
       "source": "아시아경제",
@@ -219,41 +188,12 @@
       "matched_keywords": [
         "유가",
         "공정위",
-        "담합"
+        "담합",
+        "조사"
       ],
       "quality_status": "review",
       "status_label": "검토필요",
       "status_reason": "발행시각 확인 불가"
-    },
-    {
-      "title": "뉴스1",
-      "url": "https://v.daum.net/channel/396/home",
-      "source": "뉴스1",
-      "published_at": "",
-      "snippet": "가격제(정유사 공급가 상한제)와 유류세 인하 조치가 없었다면 지난달 휘발유 가격이 리터(L)당 2200원, 경유는 2800원까지 치솟았을 것이라는 분석이 나왔다. 정부는 이러한 정책을 통해 실제 물가 상승률을 3월 0.6%포인트(p), 지난달 1.2%p 낮췄다고 평가했다... 2026.05.07 2",
-      "collected_at": "2026-06-19T16:45:23.055888+09:00",
-      "normalized_title": "뉴스1",
-      "source_normalized": "뉴스1",
-      "duplicate_key": "뉴스1::뉴스1",
-      "portals": [
-        "daum"
-      ],
-      "queries": [
-        "공정거래위원회 정유사 담합"
-      ],
-      "duplicate_count": 1,
-      "canonical_url": "https://v.daum.net/channel/396/home",
-      "id": "c8ccc99cbe11b78a",
-      "grade": "A",
-      "published_at_status": "unknown",
-      "matched_keywords": [
-        "정유사",
-        "휘발유",
-        "경유"
-      ],
-      "quality_status": "review",
-      "status_label": "검토필요",
-      "status_reason": "발행시각 확인 불가 · 유가담합 관련성 확인 필요"
     },
     {
       "title": "정부, 최고가격제 정유사 손실보전 착수…핵심은 '유종별 원가'",
@@ -281,70 +221,45 @@
         "정유사",
         "석유제품",
         "공정거래위원회",
-        "담합"
+        "담합",
+        "조사"
       ],
       "quality_status": "review",
       "status_label": "검토필요",
       "status_reason": "발행시각 확인 불가"
     },
     {
-      "title": "MBN",
-      "url": "https://v.daum.net/channel/60/home",
-      "source": "MBN",
-      "published_at": "2026-06-18T00:00:00+09:00",
-      "snippet": "같은 달 대비 3배 이상 증가했습니다. ---- 중동 전쟁이 끝나고 유가가 하락해도 소비 개선, 임금 상승 등으로 물가가 쉽게 떨어지기...물가 압력이 추가 확대될 수 있다고 평가했습니다. --- 대규모 담합 등 불공정거래 행위에 대한 내부고발을 활성화하기 위해... 2026.06.18",
-      "collected_at": "2026-06-19T16:45:13.073708+09:00",
-      "normalized_title": "MBN",
-      "source_normalized": "MBN",
-      "duplicate_key": "mbn::mbn",
-      "portals": [
-        "daum"
-      ],
-      "queries": [
-        "공정위 유가 담합"
-      ],
-      "duplicate_count": 0,
-      "canonical_url": "https://v.daum.net/channel/60/home",
-      "id": "34c3c21f7bad0e6c",
-      "grade": "B",
-      "published_at_status": "known",
-      "matched_keywords": [
-        "유가",
-        "담합"
-      ],
-      "quality_status": "excluded",
-      "status_label": "제외",
-      "status_reason": "인사/부고/일정성 문서"
-    },
-    {
-      "title": "\"최고가격제 없었다면 휘발유 2200원·경유 2800원\"…물가 1.2%p 방어",
-      "url": "http://v.daum.net/v/20260507090124039",
-      "source": "2026.05.07",
+      "title": "[기업기상도] 순풍 타고 돛 단 기업 vs 바람 불어 닻 내린 기업",
+      "url": "http://www.yonhapnewstv.co.kr/news/MYH202606071434449lC",
+      "source": "연합뉴스TV",
       "published_at": "",
-      "snippet": "가격제(정유사 공급가 상한제)와 유류세 인하 조치가 없었다면 지난달 휘발유 가격이 리터(L)당 2200원, 경유는 2800원까지 치솟았을 것이라는 분석이 나왔다. 정부는 이러한 정책을 통해 실제 물가 상승률을 3월 0.6%포인트(p), 지난달 1.2%p 낮췄다고 평가했다... 2026.05.07 2",
-      "collected_at": "2026-06-19T16:45:23.061822+09:00",
-      "normalized_title": "\"최고가격제 없었다면 휘발유 2200원·경유 2800원\"…물가 1.2%p 방어",
-      "source_normalized": "2026.05.07",
-      "duplicate_key": "2026.05.07::\"최고가격제 없었다면 휘발유 2200원·경유 2800원\"…물가 1.2%p 방어",
+      "snippet": "비싼 원유 들어오기도 전에 덮어높고 기름값 올리자 3월 대통령의 담합 가능성 지적 이어 공정거래위원회 조사, 검찰 압수수색 있었죠. 자료 분석 마쳤는지 검찰이 지방선거 직전 정유사 S오일 소매쪽 관계자 소환했습니다. 검찰은 가격조정 지시 체계와 경쟁사 동향 보고 방식, 주유소 공급가 변동 과정 집중...",
+      "collected_at": "2026-06-19T16:45:22.139599+09:00",
+      "normalized_title": "[기업기상도] 순풍 타고 돛 단 기업 vs 바람 불어 닻 내린 기업",
+      "source_normalized": "연합뉴스TV",
+      "duplicate_key": "연합뉴스tv::[기업기상도] 순풍 타고 돛 단 기업 vs 바람 불어 닻 내린 기업",
       "portals": [
-        "daum"
+        "naver"
       ],
       "queries": [
         "공정거래위원회 정유사 담합"
       ],
       "duplicate_count": 0,
-      "canonical_url": "http://v.daum.net/v/20260507090124039",
-      "id": "e39e18fb6eb54b67",
-      "grade": "C",
+      "canonical_url": "http://www.yonhapnewstv.co.kr/news/MYH202606071434449lC",
+      "id": "8ee7546164318d1a",
+      "grade": "B",
       "published_at_status": "unknown",
       "matched_keywords": [
         "정유사",
-        "휘발유",
-        "경유"
+        "기름값",
+        "주유소",
+        "공정거래위원회",
+        "담합",
+        "조사"
       ],
       "quality_status": "review",
       "status_label": "검토필요",
-      "status_reason": "발행시각 확인 불가 · 유가담합 관련성 확인 필요"
+      "status_reason": "발행시각 확인 불가"
     },
     {
       "title": "정부, 최고가격제 정유사 손실보전 착수…핵심은 '유종별 원가'",
@@ -372,41 +287,12 @@
         "정유사",
         "석유제품",
         "공정거래위원회",
-        "담합"
+        "담합",
+        "조사"
       ],
       "quality_status": "review",
       "status_label": "검토필요",
       "status_reason": "발행시각 확인 불가"
-    },
-    {
-      "title": "정부, 물가 3%대 진입에 석유류·먹거리·바가지요금 총력 대응",
-      "url": "http://v.daum.net/v/20260604140202230",
-      "source": "2026.06.04",
-      "published_at": "",
-      "snippet": "계획이다. 정유사들은 오는 7~8월 중 손실보전 입증자료를 제출하게 된다. 가격 안정에 기여한 주유소를 대상으로 '착한주유소' 추가 선정도 이어가며, 포상 등 추가 인센티브 제공 방안도 검토할 예정이다. 강기룡 재정경제부 차관보는 지난 2일 사전 브리핑에서... 2026.06.04 3",
-      "collected_at": "2026-06-19T16:45:23.054670+09:00",
-      "normalized_title": "정부, 물가 3%대 진입에 석유류·먹거리·바가지요금 총력 대응",
-      "source_normalized": "2026.06.04",
-      "duplicate_key": "2026.06.04::정부, 물가 3%대 진입에 석유류·먹거리·바가지요금 총력 대응",
-      "portals": [
-        "daum"
-      ],
-      "queries": [
-        "공정거래위원회 정유사 담합"
-      ],
-      "duplicate_count": 0,
-      "canonical_url": "http://v.daum.net/v/20260604140202230",
-      "id": "b03bbc07f21d775f",
-      "grade": "C",
-      "published_at_status": "unknown",
-      "matched_keywords": [
-        "석유",
-        "정유사",
-        "주유소"
-      ],
-      "quality_status": "review",
-      "status_label": "검토필요",
-      "status_reason": "발행시각 확인 불가 · 유가담합 관련성 확인 필요"
     },
     {
       "title": "‘유가 담합’ 공정위 제친 檢…‘기름값 짬짜미’ 구속영장 초강수",
@@ -434,7 +320,8 @@
         "유가",
         "기름값",
         "공정위",
-        "담합"
+        "담합",
+        "조사"
       ],
       "quality_status": "review",
       "status_label": "검토필요",
@@ -464,68 +351,12 @@
       "matched_keywords": [
         "유가",
         "공정위",
-        "담합"
+        "담합",
+        "과징금"
       ],
       "quality_status": "review",
       "status_label": "검토필요",
       "status_reason": "발행시각 확인 불가"
-    },
-    {
-      "title": "미·이란 종전 합의에 '숨통' 튼 식품업계…고환율은 여전히 과제",
-      "url": "http://v.daum.net/v/20260615150736772",
-      "source": "2026.06.15",
-      "published_at": "",
-      "snippet": "국제 유가가 배럴당 100달러를 돌파하며 글로벌 에너지 공급 대란이 이어졌고, 이는 국내 식품기업들의 원가 부담으로 직결됐다. 현재 식품업계는 포장재, 에너지, 물류비, 원재료 등 생산비용 전반이 상승했다. 일례로 포장재 주요 원료 중 하나인 알루미늄 시세는... 2026.06.15 1",
-      "collected_at": "2026-06-19T16:45:13.076004+09:00",
-      "normalized_title": "미·이란 종전 합의에 '숨통' 튼 식품업계…고환율은 여전히 과제",
-      "source_normalized": "2026.06.15",
-      "duplicate_key": "2026.06.15::미·이란 종전 합의에 '숨통' 튼 식품업계…고환율은 여전히 과제",
-      "portals": [
-        "daum"
-      ],
-      "queries": [
-        "공정위 유가 담합"
-      ],
-      "duplicate_count": 0,
-      "canonical_url": "http://v.daum.net/v/20260615150736772",
-      "id": "cd1cb81e4c4ddd04",
-      "grade": "C",
-      "published_at_status": "unknown",
-      "matched_keywords": [
-        "유가"
-      ],
-      "quality_status": "review",
-      "status_label": "검토필요",
-      "status_reason": "발행시각 확인 불가 · 유가담합 관련성 확인 필요"
-    },
-    {
-      "title": "[굿모닝경제] 5월 방한객 소비액 2조 원 / \"하반기 물가상승률 3% 내외\" / 불공정거래 포상금 대폭 확대",
-      "url": "http://v.daum.net/v/20260618080633734",
-      "source": "2026.06.18",
-      "published_at": "2026-06-18T00:00:00+09:00",
-      "snippet": "같은 달 대비 3배 이상 증가했습니다. ---- 중동 전쟁이 끝나고 유가가 하락해도 소비 개선, 임금 상승 등으로 물가가 쉽게 떨어지기...물가 압력이 추가 확대될 수 있다고 평가했습니다. --- 대규모 담합 등 불공정거래 행위에 대한 내부고발을 활성화하기 위해... 2026.06.18",
-      "collected_at": "2026-06-19T16:45:13.074294+09:00",
-      "normalized_title": "[굿모닝경제] 5월 방한객 소비액 2조 원 / \"하반기 물가상승률 3% 내외\" / 불공정거래 포상금 대폭 확대",
-      "source_normalized": "2026.06.18",
-      "duplicate_key": "2026.06.18::[굿모닝경제] 5월 방한객 소비액 2조 원 / \"하반기 물가상승률 3% 내외\" / 불공정거래 포상금 대폭 확대",
-      "portals": [
-        "daum"
-      ],
-      "queries": [
-        "공정위 유가 담합"
-      ],
-      "duplicate_count": 0,
-      "canonical_url": "http://v.daum.net/v/20260618080633734",
-      "id": "584b633ff411a113",
-      "grade": "C",
-      "published_at_status": "known",
-      "matched_keywords": [
-        "유가",
-        "담합"
-      ],
-      "quality_status": "excluded",
-      "status_label": "제외",
-      "status_reason": "인사/부고/일정성 문서"
     },
     {
       "title": "‘담합 구속’ HD현대오일뱅크, 윤리경영 ‘물음표‘",
@@ -557,34 +388,6 @@
       "status_reason": "발행시각 확인 불가"
     },
     {
-      "title": "‘담합 구속’ HD현대오일뱅크, 윤리경영 ‘물음표‘",
-      "url": "http://v.daum.net/v/20260619164408394",
-      "source": "56초 전",
-      "published_at": "",
-      "snippet": "돈벌이로… '유류 담합' 의혹 첫 구속 담합 혐의와 관련해 구속 기로에 섰던 HD현대오일뱅크 임원이 결국 구속됐다. 서울중앙지법 부동식 영장전담 부장판사는 지난 18일 담합 혐의로 구속영장이 청구된 HD현대오일뱅크 임직원 2명에 대한 구속 전 피의자 심문(영장... 56초 전",
-      "collected_at": "2026-06-19T16:45:05.070583+09:00",
-      "normalized_title": "‘담합 구속’ HD현대오일뱅크, 윤리경영 ‘물음표‘",
-      "source_normalized": "56초 전",
-      "duplicate_key": "56초 전::‘담합 구속’ hd현대오일뱅크, 윤리경영 ‘물음표‘",
-      "portals": [
-        "daum"
-      ],
-      "queries": [
-        "유류가격 담합"
-      ],
-      "duplicate_count": 0,
-      "canonical_url": "http://v.daum.net/v/20260619164408394",
-      "id": "c4f1b904d51b1fc5",
-      "grade": "C",
-      "published_at_status": "unknown",
-      "matched_keywords": [
-        "담합"
-      ],
-      "quality_status": "review",
-      "status_label": "검토필요",
-      "status_reason": "발행시각 확인 불가"
-    },
-    {
       "title": "더팩트",
       "url": "https://v.daum.net/channel/359/home",
       "source": "더팩트",
@@ -607,7 +410,8 @@
       "published_at_status": "unknown",
       "matched_keywords": [
         "유가",
-        "공정위"
+        "공정위",
+        "과징금"
       ],
       "quality_status": "review",
       "status_label": "검토필요",
@@ -637,159 +441,8 @@
       "matched_keywords": [
         "유가",
         "공정위",
-        "담합"
-      ],
-      "quality_status": "review",
-      "status_label": "검토필요",
-      "status_reason": "발행시각 확인 불가"
-    },
-    {
-      "title": "시사위크",
-      "url": "https://v.daum.net/channel/552791/home",
-      "source": "시사위크",
-      "published_at": "",
-      "snippet": "돈벌이로… '유류 담합' 의혹 첫 구속 담합 혐의와 관련해 구속 기로에 섰던 HD현대오일뱅크 임원이 결국 구속됐다. 서울중앙지법 부동식 영장전담 부장판사는 지난 18일 담합 혐의로 구속영장이 청구된 HD현대오일뱅크 임직원 2명에 대한 구속 전 피의자 심문(영장... 56초 전",
-      "collected_at": "2026-06-19T16:44:43.744585+09:00",
-      "normalized_title": "시사위크",
-      "source_normalized": "시사위크",
-      "duplicate_key": "시사위크::시사위크",
-      "portals": [
-        "daum"
-      ],
-      "queries": [
-        "유류가격 담합",
-        "정유업계 담합"
-      ],
-      "duplicate_count": 1,
-      "canonical_url": "https://v.daum.net/channel/552791/home",
-      "id": "e3ff0a664f8b0bcb",
-      "grade": "C",
-      "published_at_status": "unknown",
-      "matched_keywords": [
-        "담합"
-      ],
-      "quality_status": "review",
-      "status_label": "검토필요",
-      "status_reason": "발행시각 확인 불가"
-    },
-    {
-      "title": "[기업기상도] 순풍 타고 돛 단 기업 vs 바람 불어 닻 내린 기업",
-      "url": "http://www.yonhapnewstv.co.kr/news/MYH202606071434449lC",
-      "source": "연합뉴스TV",
-      "published_at": "",
-      "snippet": "비싼 원유 들어오기도 전에 덮어높고 기름값 올리자 3월 대통령의 담합 가능성 지적 이어 공정거래위원회 조사, 검찰 압수수색 있었죠. 자료 분석 마쳤는지 검찰이 지방선거 직전 정유사 S오일 소매쪽 관계자 소환했습니다. 검찰은 가격조정 지시 체계와 경쟁사 동향 보고 방식, 주유소 공급가 변동 과정 집중...",
-      "collected_at": "2026-06-19T16:45:22.139599+09:00",
-      "normalized_title": "[기업기상도] 순풍 타고 돛 단 기업 vs 바람 불어 닻 내린 기업",
-      "source_normalized": "연합뉴스TV",
-      "duplicate_key": "연합뉴스tv::[기업기상도] 순풍 타고 돛 단 기업 vs 바람 불어 닻 내린 기업",
-      "portals": [
-        "naver"
-      ],
-      "queries": [
-        "공정거래위원회 정유사 담합"
-      ],
-      "duplicate_count": 0,
-      "canonical_url": "http://www.yonhapnewstv.co.kr/news/MYH202606071434449lC",
-      "id": "8ee7546164318d1a",
-      "grade": "C",
-      "published_at_status": "unknown",
-      "matched_keywords": [
-        "정유사",
-        "기름값",
-        "주유소",
-        "공정거래위원회",
-        "담합"
-      ],
-      "quality_status": "review",
-      "status_label": "검토필요",
-      "status_reason": "발행시각 확인 불가"
-    },
-    {
-      "title": "연합인포맥스",
-      "url": "https://v.daum.net/channel/552842/home",
-      "source": "연합인포맥스",
-      "published_at": "",
-      "snippet": "계획이다. 정유사들은 오는 7~8월 중 손실보전 입증자료를 제출하게 된다. 가격 안정에 기여한 주유소를 대상으로 '착한주유소' 추가 선정도 이어가며, 포상 등 추가 인센티브 제공 방안도 검토할 예정이다. 강기룡 재정경제부 차관보는 지난 2일 사전 브리핑에서... 2026.06.04 3",
-      "collected_at": "2026-06-19T16:45:23.054142+09:00",
-      "normalized_title": "연합인포맥스",
-      "source_normalized": "연합인포맥스",
-      "duplicate_key": "연합인포맥스::연합인포맥스",
-      "portals": [
-        "daum"
-      ],
-      "queries": [
-        "공정거래위원회 정유사 담합"
-      ],
-      "duplicate_count": 0,
-      "canonical_url": "https://v.daum.net/channel/552842/home",
-      "id": "9d160e25694da2e6",
-      "grade": "C",
-      "published_at_status": "unknown",
-      "matched_keywords": [
-        "정유사",
-        "주유소"
-      ],
-      "quality_status": "review",
-      "status_label": "검토필요",
-      "status_reason": "발행시각 확인 불가 · 유가담합 관련성 확인 필요"
-    },
-    {
-      "title": "정부, 물가 3%대 진입에 석유류·먹거리·바가지요금 총력 대응",
-      "url": "https://news.einfomax.co.kr/news/articleView.html?idxno=4418287",
-      "source": "연합인포맥스",
-      "published_at": "",
-      "snippet": "정부는 중동정세와 국제유가 흐름을 감안해 석유제품 최고가격제를 탄력적으로 운용하고, 정유사 손실보전 기준을 마련한다. 아울러 돼지고기·닭고기... 불공정행위 신고포상금 지급 한도도 폐지하고, 과징금의 최대 10%까지 지급할 수 있도록 공정거래위원회 규정 개정을 추진한다. 일방적 예약취소에 대한...",
-      "collected_at": "2026-06-19T16:45:22.140872+09:00",
-      "normalized_title": "정부, 물가 3%대 진입에 석유류·먹거리·바가지요금 총력 대응",
-      "source_normalized": "연합인포맥스",
-      "duplicate_key": "연합인포맥스::정부, 물가 3%대 진입에 석유류·먹거리·바가지요금 총력 대응",
-      "portals": [
-        "naver"
-      ],
-      "queries": [
-        "공정거래위원회 정유사 담합"
-      ],
-      "duplicate_count": 0,
-      "canonical_url": "https://news.einfomax.co.kr/news/articleView.html?idxno=4418287",
-      "id": "f403717e309ec2e9",
-      "grade": "C",
-      "published_at_status": "unknown",
-      "matched_keywords": [
-        "유가",
-        "석유",
-        "정유사",
-        "석유제품",
-        "공정거래위원회"
-      ],
-      "quality_status": "excluded",
-      "status_label": "제외",
-      "status_reason": "인사/부고/일정성 문서"
-    },
-    {
-      "title": "[이재명정부 1년] K-푸드, 글로벌 성장↑…내수불황 극복·상생적 '유통...",
-      "url": "https://www.pointdaily.co.kr/news/articleView.html?idxno=306987",
-      "source": "포인트데일리",
-      "published_at": "",
-      "snippet": "사진=함영원 기자 ◇ 내수 시장 불황에 중동 전쟁 등 겹치면서 고유가·고환율·고금리 '3고' 특히 정부는 설탕, 밀가루, 전분당 등 주요 식품 원자재... 규모의 담합 의혹에 대한 심의를 진행하고 있다. 이같은 공정위 조사와 가격 재조정 조치를 통해 실질적으로 식품 가격은 낮아졌다. 설탕은 최대 26...",
-      "collected_at": "2026-06-19T16:45:12.191980+09:00",
-      "normalized_title": "[이재명정부 1년] K-푸드, 글로벌 성장↑…내수불황 극복·상생적 '유통...",
-      "source_normalized": "포인트데일리",
-      "duplicate_key": "포인트데일리::[이재명정부 1년] k-푸드, 글로벌 성장↑…내수불황 극복·상생적 '유통...",
-      "portals": [
-        "naver"
-      ],
-      "queries": [
-        "공정위 유가 담합"
-      ],
-      "duplicate_count": 0,
-      "canonical_url": "https://www.pointdaily.co.kr/news/articleView.html?idxno=306987",
-      "id": "5e1a68cacee1816e",
-      "grade": "C",
-      "published_at_status": "unknown",
-      "matched_keywords": [
-        "유가",
-        "공정위",
-        "담합"
+        "담합",
+        "조사"
       ],
       "quality_status": "review",
       "status_label": "검토필요",
@@ -819,7 +472,10 @@
       "matched_keywords": [
         "유가",
         "공정위",
-        "담합"
+        "담합",
+        "조사",
+        "제재",
+        "과징금"
       ],
       "quality_status": "review",
       "status_label": "검토필요",
