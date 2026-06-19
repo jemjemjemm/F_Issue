@@ -2,11 +2,9 @@
 
 const state = {
   reportIndex: [], currentYear: null, currentMonth: null,
-  today: null, selectedDate: null, selectedSlot: null,
-  currentReport: null, viewingMode: "today"
+  today: null, selectedDate: null, loadedReports: [], viewingMode: "today"
 };
 
-const collapsedState = {B: true, C: true};
 const $ = selector => document.querySelector(selector);
 const escapeHTML = (value = "") => String(value).replace(/[&<>'"]/g, char => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"})[char]);
 const safeURL = (value = "") => /^https?:\/\//i.test(value) ? value : "";
@@ -15,20 +13,9 @@ const portalNames = {naver: "네이버", daum: "다음", google: "구글"};
 const gradeTitles = {A: "주요 종합지·경제지·통신사", B: "중견 경제지·전문지·방송사", C: "기타매체"};
 
 function getTodayKSTDateString() {
-  const formatter = new Intl.DateTimeFormat("en-CA", {
+  return new Intl.DateTimeFormat("en-CA", {
     timeZone: "Asia/Seoul", year: "numeric", month: "2-digit", day: "2-digit"
-  });
-  return formatter.format(new Date());
-}
-
-function getKSTDateFromISOString(value) {
-  if (!value) return null;
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return null;
-  const formatter = new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Asia/Seoul", year: "numeric", month: "2-digit", day: "2-digit"
-  });
-  return formatter.format(date);
+  }).format(new Date());
 }
 
 function displayDateTime(value) {
@@ -51,14 +38,18 @@ function isReportPath(path) {
   return /^data\/reports\/[0-9]{4}-[0-9]{2}-[0-9]{2}-(morning|evening)\.json$/.test(path || "");
 }
 
+async function loadReportByPath(jsonPath) {
+  if (!isReportPath(jsonPath)) throw new Error(`올바르지 않은 리포트 경로입니다: ${jsonPath || "(없음)"}`);
+  return fetchJSON(jsonPath);
+}
+
 async function loadReportIndex() {
   const index = await fetchJSON("data/report-index.json");
   state.reportIndex = Array.isArray(index) ? index : [];
-  return state.reportIndex;
 }
 
 function sortReportsBySlotPriority(a, b) {
-  const priority = {evening: 0, morning: 1};
+  const priority = {morning: 0, evening: 1};
   return (priority[a.slot] ?? 9) - (priority[b.slot] ?? 9);
 }
 
@@ -66,49 +57,6 @@ function getReportsByDate(baseDate) {
   return state.reportIndex
     .filter(item => item.base_date === baseDate)
     .sort(sortReportsBySlotPriority);
-}
-
-function filterArticlesForVisibleDate(reportData, visibleDate) {
-  return (reportData.articles || []).filter(article => {
-    if (!article.published_at || article.published_at_status === "unknown") {
-      return reportData.base_date === visibleDate;
-    }
-    return getKSTDateFromISOString(article.published_at) === visibleDate;
-  });
-}
-
-function resetGradeCollapseState() {
-  collapsedState.B = true;
-  collapsedState.C = true;
-}
-
-function visibleCounts(articles) {
-  const result = {ok: 0, review: 0, excluded: 0, A: 0, B: 0, C: 0};
-  articles.forEach(article => {
-    if (result[article.quality_status] !== undefined) result[article.quality_status] += 1;
-    if (result[article.grade] !== undefined) result[article.grade] += 1;
-  });
-  return result;
-}
-
-function renderSummary(report, articles) {
-  const counts = visibleCounts(articles);
-  const cards = [
-    ["화면 표시", articles.length], ["정상", counts.ok], ["검토필요", counts.review],
-    ["제외", counts.excluded], ["A등급", counts.A], ["B등급", counts.B], ["C등급", counts.C]
-  ];
-  $("#summary-grid").innerHTML = cards.map(([label, count]) =>
-    `<div class="summary-card"><span>${label}</span><strong>${formatNumber(count)}<small>건</small></strong></div>`
-  ).join("");
-  const portals = report.portal_counts || {};
-  $("#portal-summary").innerHTML = `<strong>포털별 원본 수집</strong>${["naver","daum","google"].map(portal =>
-    `<span class="portal-chip">${portalNames[portal]} <strong>${formatNumber(portals[portal])}건</strong></span>`
-  ).join("")}<span class="portal-chip">해당 리포트 전체 <strong>${formatNumber(report.total_deduped_count)}건</strong></span>`;
-}
-
-function renderSummaryEmpty(date) {
-  $("#summary-grid").innerHTML = `<div class="summary-card summary-card-wide"><span>${escapeHTML(date)}</span><strong>0<small>건</small></strong></div>`;
-  $("#portal-summary").innerHTML = `<p class="quiet-message">오늘 생성된 수집 데이터가 없습니다.</p>`;
 }
 
 function renderArticle(article) {
@@ -133,122 +81,188 @@ function renderArticlesBySource(articles) {
     media.get(source).push(article);
   });
   return [...media.entries()].map(([source, items]) =>
-    `<article class="media-card"><h4 class="media-title">${escapeHTML(source)}<span>${items.length}건</span></h4><ul class="article-list">${items.map(renderArticle).join("")}</ul></article>`
+    `<article class="media-card"><h4 class="media-title">${escapeHTML(source)}<span>${formatNumber(items.length)}건</span></h4><ul class="article-list">${items.map(renderArticle).join("")}</ul></article>`
   ).join("");
 }
 
-function renderGradeSection(grade, articles) {
-  const title = gradeTitles[grade];
+function groupArticlesByGradeAndSource(articles) {
+  return (articles || []).reduce((groups, article) => {
+    const grade = ["A", "B", "C"].includes(article.grade) ? article.grade : "C";
+    groups[grade].push(article);
+    return groups;
+  }, {A: [], B: [], C: []});
+}
+
+function renderGradeSection(grade, title, articles) {
   const collapsible = grade !== "A";
-  const collapsed = collapsible && collapsedState[grade];
-  return `<section class="grade-section grade-${grade.toLowerCase()} ${collapsed ? "is-collapsed" : ""}">
-    <div class="grade-header"><div><span class="badge grade-mark grade-mark-${grade.toLowerCase()}">${grade}</span><h3>${title}</h3></div><span class="grade-count">${formatNumber(articles.length)}건</span></div>
-    ${collapsible ? `<button class="grade-toggle-btn" type="button" data-toggle-grade="${grade}" aria-expanded="${!collapsed}">${title} ${collapsed ? "보기" : "숨기기"}</button>` : ""}
-    <div class="grade-body" ${collapsed ? "hidden" : ""}>${renderArticlesBySource(articles)}</div>
+  return `<section class="grade-section grade-${grade.toLowerCase()} ${collapsible ? "is-collapsed" : "is-open"}">
+    <div class="grade-header"><div><span class="badge grade-mark grade-mark-${grade.toLowerCase()}">${grade}</span><h3>${escapeHTML(title)}</h3></div><span class="grade-count">${formatNumber(articles.length)}건</span></div>
+    ${collapsible ? `<button class="grade-toggle-btn" type="button" data-toggle-grade="${grade}" aria-expanded="false">${escapeHTML(title)} 보기</button>` : ""}
+    <div class="grade-body" ${collapsible ? "hidden" : ""}>${renderArticlesBySource(articles)}</div>
   </section>`;
 }
 
-function bindGradeToggleButtons() {
-  document.querySelectorAll("[data-toggle-grade]").forEach(button => {
+function renderSingleReportBody(reportData) {
+  const articles = reportData.articles || [];
+  const grouped = groupArticlesByGradeAndSource(articles);
+  return `<div class="report-summary-mini">
+      <span>전체 <strong>${formatNumber(reportData.total_deduped_count ?? articles.length)}건</strong></span>
+      <span>정상 <strong>${formatNumber(reportData.total_ok_count)}건</strong></span>
+      <span>검토필요 <strong>${formatNumber(reportData.total_review_count)}건</strong></span>
+      <span>제외 <strong>${formatNumber(reportData.total_excluded_count)}건</strong></span>
+    </div>
+    ${renderGradeSection("A", gradeTitles.A, grouped.A)}
+    ${renderGradeSection("B", gradeTitles.B, grouped.B)}
+    ${renderGradeSection("C", gradeTitles.C, grouped.C)}`;
+}
+
+function formatReportPeriod(reportData, meta) {
+  return reportData.period_label || meta.period || `${displayDateTime(reportData.period_start)} ~ ${displayDateTime(reportData.period_end)}`;
+}
+
+function renderReportAccordionItem(meta, reportData, openByDefault = false) {
+  const slotLabel = meta.slot === "morning" ? "Morning" : "Evening";
+  const count = reportData.total_deduped_count ?? reportData.articles?.length ?? 0;
+  const bodyId = `report-accordion-${escapeHTML(meta.base_date)}-${escapeHTML(meta.slot)}`;
+  return `<article class="report-accordion-item ${openByDefault ? "is-open" : ""}" data-report-slot="${escapeHTML(meta.slot)}">
+    <button type="button" class="report-accordion-header" data-toggle-report="${escapeHTML(meta.slot)}" aria-expanded="${openByDefault}" aria-controls="${bodyId}">
+      <span class="accordion-title"><strong>${slotLabel}</strong><span>${formatNumber(count)}건</span></span>
+      <small>${escapeHTML(formatReportPeriod(reportData, meta))}</small>
+      <span class="accordion-arrow">${openByDefault ? "숨기기" : "펼치기"}</span>
+    </button>
+    <div id="${bodyId}" class="report-accordion-body" ${openByDefault ? "" : "hidden"}>${renderSingleReportBody(reportData)}</div>
+  </article>`;
+}
+
+function bindReportAccordionEvents() {
+  $("#report-root").querySelectorAll("[data-toggle-report]").forEach(button => {
     button.addEventListener("click", () => {
-      const grade = button.dataset.toggleGrade;
-      collapsedState[grade] = !collapsedState[grade];
-      const section = button.closest(".grade-section");
-      const body = section.querySelector(".grade-body");
-      body.hidden = collapsedState[grade];
-      section.classList.toggle("is-collapsed", collapsedState[grade]);
-      button.setAttribute("aria-expanded", String(!collapsedState[grade]));
-      button.textContent = `${gradeTitles[grade]} ${collapsedState[grade] ? "보기" : "숨기기"}`;
+      const item = button.closest(".report-accordion-item");
+      const body = item.querySelector(".report-accordion-body");
+      const willOpen = body.hidden;
+      body.hidden = !willOpen;
+      item.classList.toggle("is-open", willOpen);
+      button.setAttribute("aria-expanded", String(willOpen));
+      item.querySelector(".accordion-arrow").textContent = willOpen ? "숨기기" : "펼치기";
     });
   });
 }
 
-function renderArticlesByGrade(articles) {
-  const root = $("#article-groups");
-  if (!articles.length) {
-    root.innerHTML = `<div class="empty-state"><strong>선택한 날짜에 표시할 기사가 없습니다.</strong><p>발행시각 미상 기사는 해당 수집 리포트의 기준일에만 표시됩니다.</p></div>`;
-    return;
-  }
-  root.innerHTML = ["A", "B", "C"].map(grade => renderGradeSection(grade, articles.filter(item => item.grade === grade))).join("");
-  bindGradeToggleButtons();
+function bindGradeToggleEvents() {
+  $("#report-root").querySelectorAll("[data-toggle-grade]").forEach(button => {
+    button.addEventListener("click", () => {
+      const section = button.closest(".grade-section");
+      const body = section.querySelector(".grade-body");
+      const grade = button.dataset.toggleGrade;
+      const willOpen = body.hidden;
+      body.hidden = !willOpen;
+      section.classList.toggle("is-open", willOpen);
+      section.classList.toggle("is-collapsed", !willOpen);
+      button.setAttribute("aria-expanded", String(willOpen));
+      button.textContent = `${gradeTitles[grade]} ${willOpen ? "숨기기" : "보기"}`;
+    });
+  });
 }
 
 function renderNotice(mode) {
   const past = mode === "past";
   $("#today-notice").className = past ? "past-report-notice" : "today-only-notice";
   $("#today-notice").innerHTML = past
-    ? `<span>선택한 과거 리포트를 표시 중입니다. 오늘 기사로 돌아가려면 "오늘 기사 보기"를 누르세요.</span><button id="return-today-button" class="return-today-btn" type="button">오늘 기사 보기</button>`
-    : `<span>오늘 기사만 표시 중입니다. 과거 기사는 화면 아래 Calendar에서 날짜를 선택해 확인하세요.</span>`;
-  if (past) $("#return-today-button").addEventListener("click", showTodayReport);
+    ? `<span>선택한 과거 리포트를 표시 중입니다. 오늘 기사로 돌아가려면 "오늘 기사 보기"를 누르세요.</span><button class="return-today-btn" type="button" data-return-today>오늘 기사 보기</button>`
+    : `<span>오늘 리포트를 표시 중입니다. 과거 기사는 화면 아래 Calendar에서 날짜를 선택해 확인하세요.</span>`;
+  bindReturnTodayButton();
 }
 
-function clearReportRoot() {
-  $("#article-groups").innerHTML = "";
+function bindReturnTodayButton() {
+  document.querySelectorAll("[data-return-today]").forEach(button => button.addEventListener("click", showTodayReport));
 }
 
-function renderTodayOnlyNotice(message) {
-  $("#today-notice").className = "today-only-notice";
-  $("#today-notice").textContent = message;
+function renderSelectedDateHeader(baseDate, loadedReports) {
+  const summary = loadedReports.map(({meta, data}) => `${meta.slot === "morning" ? "Morning" : "Evening"} ${formatNumber(data.total_deduped_count ?? data.articles?.length)}건`).join(" / ");
+  $("#report-slot").textContent = baseDate === state.today ? "Today" : "Past";
+  $("#report-period-title").textContent = `선택 날짜: ${baseDate}`;
+  $("#period-range").textContent = summary ? `해당 날짜 리포트: ${summary}` : "해당 날짜의 리포트가 없습니다.";
+  const latestGenerated = loadedReports.map(item => item.data.generated_at).filter(Boolean).sort().at(-1);
+  $("#generated-at").textContent = latestGenerated ? `업데이트 ${displayDateTime(latestGenerated)}` : "";
+  $("#report-selector-root").innerHTML = summary
+    ? `<p class="selected-report-summary"><strong>${escapeHTML(baseDate)}</strong><span>${escapeHTML(summary)}</span></p>`
+    : `<p class="quiet-message"><strong>${escapeHTML(baseDate)}</strong> · 해당 날짜의 리포트가 없습니다.</p>`;
 }
 
-function renderReport(reportData, options = {}) {
-  const visibleDate = options.visibleDate || state.selectedDate || reportData.base_date;
-  if (reportData.base_date !== visibleDate) throw new Error("선택 날짜와 리포트 기준일이 일치하지 않습니다.");
-  const visibleArticles = filterArticlesForVisibleDate(reportData, visibleDate);
-  state.currentReport = {...reportData, articles: visibleArticles};
-  state.viewingMode = options.mode || (visibleDate === state.today ? "today" : "past");
-  resetGradeCollapseState();
-
-  $("#report-slot").textContent = reportData.slot === "evening" ? "Evening" : "Morning";
-  $("#report-period-title").textContent = `${visibleDate} 리포트`;
-  $("#period-range").textContent = `수집 범위  ${reportData.period_label || `${displayDateTime(reportData.period_start)} ~ ${displayDateTime(reportData.period_end)}`}`;
-  $("#generated-at").textContent = `업데이트 ${displayDateTime(reportData.generated_at)}`;
-  renderNotice(state.viewingMode);
-  renderSummary(reportData, visibleArticles);
-  renderArticlesByGrade(visibleArticles);
-  $("#loading").hidden = true;
-  $("#error-panel").hidden = true;
-  $("#dashboard").hidden = false;
+function renderSummaryForReports(baseDate, loadedReports) {
+  const totals = loadedReports.reduce((sum, {data}) => {
+    sum.all += Number(data.total_deduped_count || 0);
+    sum.ok += Number(data.total_ok_count || 0);
+    sum.review += Number(data.total_review_count || 0);
+    sum.excluded += Number(data.total_excluded_count || 0);
+    return sum;
+  }, {all: 0, ok: 0, review: 0, excluded: 0});
+  const cards = [["전체", totals.all], ["정상", totals.ok], ["검토필요", totals.review], ["제외", totals.excluded]];
+  $("#summary-grid").innerHTML = cards.map(([label, count]) => `<div class="summary-card"><span>${label}</span><strong>${formatNumber(count)}<small>건</small></strong></div>`).join("");
+  $("#portal-summary").innerHTML = loadedReports.length
+    ? `<strong>${escapeHTML(baseDate)}</strong><span class="portal-chip">리포트 <strong>${loadedReports.length}개</strong></span>`
+    : `<p class="quiet-message">${baseDate === state.today ? "오늘 생성된 리포트가 아직 없습니다." : "해당 날짜의 리포트가 없습니다."}</p>`;
 }
 
-async function loadAndRenderReport(reportMeta, options = {}) {
-  if (!reportMeta || !isReportPath(reportMeta.json_path)) throw new Error("올바르지 않은 리포트 경로입니다.");
-  const report = await fetchJSON(reportMeta.json_path);
-  state.selectedDate = reportMeta.base_date;
-  state.selectedSlot = reportMeta.slot;
-  renderReport(report, {mode: options.mode, visibleDate: options.visibleDate || reportMeta.base_date});
-  renderTopReportSelector(reportMeta.base_date, getReportsByDate(reportMeta.base_date));
-  renderCalendar($("#calendar-grid"), buildCalendar(state.currentYear, state.currentMonth));
-  return report;
-}
-
-function selectorMarkup(baseDate, reports, location) {
-  if (!reports.length) return `<p class="quiet-message"><strong>${escapeHTML(baseDate)}</strong> · 해당 날짜 리포트가 없습니다.</p>`;
-  return `<p class="selector-title">${escapeHTML(baseDate)} 리포트 선택</p><div class="selector-buttons">${reports.map(report => `<button type="button" class="report-select-button ${state.currentReport?.base_date === baseDate && state.selectedSlot === report.slot ? "active" : ""}" data-report-path="${escapeHTML(report.json_path)}" data-base-date="${escapeHTML(report.base_date)}" data-slot="${escapeHTML(report.slot)}" data-selector-location="${location}">${report.slot === "morning" ? "Morning" : "Evening"} · ${formatNumber(report.total_deduped_count)}건</button>`).join("")}</div>`;
-}
-
-function bindReportSelector(container) {
-  container.querySelectorAll("[data-report-path]").forEach(button => button.addEventListener("click", async () => {
-    button.disabled = true;
-    const meta = state.reportIndex.find(item => item.json_path === button.dataset.reportPath);
-    try {
-      const mode = meta.base_date === state.today ? "today" : "past";
-      await loadAndRenderReport(meta, {mode, visibleDate: meta.base_date});
-      $("#report-root").scrollIntoView({behavior: "smooth", block: "start"});
-    } catch (error) { showError(error); }
-  }));
-}
-
-function renderTopReportSelector(baseDate, reports) {
-  const container = $("#report-selector-root");
-  container.innerHTML = selectorMarkup(baseDate, reports, "top");
-  bindReportSelector(container);
+function renderDateReportsAccordion(baseDate, loadedReports, mode) {
+  const root = $("#report-root");
+  if (!loadedReports.length) {
+    root.innerHTML = `<section class="empty-report-card"><h2>${escapeHTML(baseDate)} 리포트</h2><p>${baseDate === state.today ? "오늘 생성된 리포트가 아직 없습니다." : "해당 날짜의 리포트가 없습니다."}</p>${mode === "past" ? `<button class="return-today-btn" type="button" data-return-today>오늘 기사 보기</button>` : ""}</section>`;
+    bindReturnTodayButton();
+    return;
+  }
+  const latestSlot = loadedReports.some(item => item.meta.slot === "evening") ? "evening" : "morning";
+  const items = loadedReports
+    .sort((a, b) => sortReportsBySlotPriority(a.meta, b.meta))
+    .map(({meta, data}) => renderReportAccordionItem(meta, data, mode === "today" && meta.slot === latestSlot))
+    .join("");
+  root.innerHTML = `<section class="selected-date-report">
+    <div class="selected-date-header"><div><p class="eyebrow dark">FULL COVERAGE</p><h2>${escapeHTML(baseDate)} 리포트</h2></div>${mode === "past" ? `<button class="return-today-btn" type="button" data-return-today>오늘 기사 보기</button>` : ""}</div>
+    ${items}
+  </section>`;
+  bindReportAccordionEvents();
+  bindGradeToggleEvents();
+  bindReturnTodayButton();
 }
 
 function renderCalendarReportSelector(baseDate, reports) {
-  const container = $("#calendar-report-selector");
-  container.innerHTML = selectorMarkup(baseDate, reports, "calendar");
-  bindReportSelector(container);
+  const summary = reports.map(report => `${report.slot === "morning" ? "Morning" : "Evening"} ${formatNumber(report.total_deduped_count)}건`).join(" / ");
+  $("#calendar-report-selector").innerHTML = summary
+    ? `<p class="selector-title">${escapeHTML(baseDate)} 선택됨</p><p class="quiet-message">${escapeHTML(summary)} · 위 기사 영역에 표시됩니다.</p>`
+    : `<p class="quiet-message"><strong>${escapeHTML(baseDate)}</strong> · 해당 날짜의 리포트가 없습니다.</p>`;
+}
+
+function markSelectedCalendarDate(baseDate) {
+  state.selectedDate = baseDate;
+  renderCalendar($("#calendar-grid"), buildCalendar(state.currentYear, state.currentMonth));
+}
+
+async function loadAndRenderDate(baseDate, {scroll = false} = {}) {
+  const reports = getReportsByDate(baseDate);
+  state.selectedDate = baseDate;
+  state.viewingMode = baseDate === state.today ? "today" : "past";
+  markSelectedCalendarDate(baseDate);
+  renderCalendarReportSelector(baseDate, reports);
+  const results = await Promise.allSettled(reports.map(async meta => ({meta, data: await loadReportByPath(meta.json_path)})));
+  const loadedReports = results.filter(result => result.status === "fulfilled").map(result => result.value);
+  results.filter(result => result.status === "rejected").forEach(result => console.error("[F-Issue] failed to load report:", result.reason));
+  state.loadedReports = loadedReports;
+  renderNotice(state.viewingMode);
+  renderSelectedDateHeader(baseDate, loadedReports);
+  renderSummaryForReports(baseDate, loadedReports);
+  renderDateReportsAccordion(baseDate, loadedReports, state.viewingMode);
+  $("#loading").hidden = true;
+  $("#error-panel").hidden = true;
+  $("#dashboard").hidden = false;
+  if (scroll) $("#report-root").scrollIntoView({behavior: "smooth", block: "start"});
+}
+
+async function onCalendarDateClick(baseDate) {
+  try {
+    await loadAndRenderDate(baseDate, {scroll: true});
+  } catch (error) {
+    showError(error);
+  }
 }
 
 function buildCalendar(year, month) {
@@ -278,46 +292,18 @@ function renderCalendar(container, calendarData) {
     const total = item.reports.reduce((sum, report) => sum + Number(report.total_deduped_count || 0), 0);
     const classes = ["calendar-day", item.reports.length ? "has-report" : "", item.date === state.today ? "today" : "", item.date === state.selectedDate ? "selected" : ""].filter(Boolean).join(" ");
     const badges = item.reports.length ? `<span class="calendar-badges">${morning ? `<span class="calendar-badge morning">M</span>` : ""}${evening ? `<span class="calendar-badge evening">E</span>` : ""}</span><span class="calendar-count">${formatNumber(total)}건</span>` : "";
-    return `<button class="${classes}" type="button" role="gridcell" data-calendar-date="${item.date}" aria-label="${item.date}, ${item.reports.length ? `리포트 ${item.reports.length}개` : "리포트 없음"}"><span class="day-number">${item.day}</span>${badges}</button>`;
+    return `<button class="${classes}" type="button" role="gridcell" data-calendar-date="${item.date}" aria-pressed="${item.date === state.selectedDate}" aria-label="${item.date}, ${item.reports.length ? `리포트 ${item.reports.length}개` : "리포트 없음"}"><span class="day-number">${item.day}</span>${badges}</button>`;
   }).join("");
   container.innerHTML = weekdays + days;
-  container.querySelectorAll("[data-calendar-date]").forEach(button => button.addEventListener("click", () => {
-    state.selectedDate = button.dataset.calendarDate;
-    renderCalendar(container, buildCalendar(state.currentYear, state.currentMonth));
-    renderCalendarReportSelector(state.selectedDate, getReportsByDate(state.selectedDate));
-  }));
+  container.querySelectorAll("[data-calendar-date]").forEach(button => button.addEventListener("click", () => onCalendarDateClick(button.dataset.calendarDate)));
 }
 
 async function showTodayReport() {
   state.today = getTodayKSTDateString();
-  state.selectedDate = state.today;
   const [year, month] = state.today.split("-").map(Number);
   state.currentYear = year;
   state.currentMonth = month - 1;
-  const reports = getReportsByDate(state.today);
-  renderCalendar($("#calendar-grid"), buildCalendar(state.currentYear, state.currentMonth));
-  renderCalendarReportSelector(state.today, reports);
-  renderTopReportSelector(state.today, reports);
-  if (!reports.length) {
-    state.currentReport = null;
-    state.selectedSlot = null;
-    renderNoTodayReport();
-    return;
-  }
-  await loadAndRenderReport(reports[0], {mode: "today", visibleDate: state.today});
-}
-
-function renderNoTodayReport() {
-  renderTodayOnlyNotice("오늘 생성된 리포트가 아직 없습니다. 과거 기사는 화면 아래 Calendar에서 날짜를 선택해 확인하세요.");
-  renderSummaryEmpty(state.today);
-  clearReportRoot();
-  $("#report-slot").textContent = "Today";
-  $("#report-period-title").textContent = `${state.today} 리포트 없음`;
-  $("#period-range").textContent = "";
-  $("#generated-at").textContent = "";
-  $("#loading").hidden = true;
-  $("#error-panel").hidden = true;
-  $("#dashboard").hidden = false;
+  await loadAndRenderDate(state.today, {scroll: true});
 }
 
 function goToPreviousMonth() {
@@ -349,20 +335,13 @@ async function initDashboard() {
   try {
     await loadReportIndex();
     state.today = getTodayKSTDateString();
-    state.selectedDate = state.today;
     const [year, month] = state.today.split("-").map(Number);
     state.currentYear = year;
     state.currentMonth = month - 1;
-    renderCalendar($("#calendar-grid"), buildCalendar(year, month - 1));
-    const todayReports = getReportsByDate(state.today);
-    renderTopReportSelector(state.today, todayReports);
-    renderCalendarReportSelector(state.today, todayReports);
-    if (!todayReports.length) {
-      renderNoTodayReport();
-      return;
-    }
-    await loadAndRenderReport(todayReports[0], {mode: "today", visibleDate: state.today});
-  } catch (error) { showError(error); }
+    await loadAndRenderDate(state.today);
+  } catch (error) {
+    showError(error);
+  }
 }
 
 document.addEventListener("DOMContentLoaded", () => {

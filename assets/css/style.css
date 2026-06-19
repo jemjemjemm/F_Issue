@@ -23,7 +23,6 @@ button { font: inherit; }
 .eyebrow.dark { color: var(--navy-2); }
 h1, h2, h3, p { margin-top: 0; }
 h1 { margin-bottom: 4px; letter-spacing: -.035em; font-size: clamp(2rem, 5vw, 3.2rem); line-height: 1.1; }
-.subtitle { margin: 0; color: #dce9f2; font-size: 1.02rem; }
 .refresh-button, .secondary-button, .calendar-controls button { min-height: 44px; border: 1px solid rgba(255,255,255,.42); border-radius: 9px; padding: 9px 15px; cursor: pointer; color: white; background: rgba(255,255,255,.1); font-weight: 700; }
 .refresh-button:hover { background: rgba(255,255,255,.18); }
 .page-shell { width: min(1160px, calc(100% - 40px)); margin: 24px auto 42px; }
@@ -47,7 +46,28 @@ h1 { margin-bottom: 4px; letter-spacing: -.035em; font-size: clamp(2rem, 5vw, 3.
 .portal-chip { white-space: nowrap; }
 .portal-chip strong { color: var(--ink); }
 .report-selector-root { margin-top: 14px; padding: 15px 18px; box-shadow: none; }
+.selected-report-summary { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 16px; margin: 0; }
+.selected-report-summary span { color: var(--muted); font-size: .86rem; }
 .article-section { margin-top: 34px; }
+.selected-date-report { min-width: 0; }
+.selected-date-header { display: flex; align-items: end; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
+.selected-date-header h2 { margin: 0; font-size: clamp(1.35rem, 3vw, 1.85rem); }
+.report-accordion-item { min-width: 0; margin-bottom: 14px; overflow: hidden; background: #fff; border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow); }
+.report-accordion-item.is-open { border-color: #9eb9cc; box-shadow: 0 10px 28px rgba(22, 56, 82, .1); }
+.report-accordion-header { display: grid; width: 100%; min-height: 76px; grid-template-columns: minmax(130px, auto) minmax(0, 1fr) auto; align-items: center; gap: 12px 18px; padding: 15px 18px; color: var(--ink); background: #fff; border: 0; cursor: pointer; text-align: left; }
+.report-accordion-header:hover { background: #f7fafc; }
+.report-accordion-item.is-open .report-accordion-header { background: #edf5fa; border-bottom: 1px solid #c9dbe7; }
+.accordion-title { display: flex; align-items: baseline; gap: 9px; }
+.accordion-title strong { color: var(--navy); font-size: 1.15rem; }
+.accordion-title span { color: var(--muted); font-size: .85rem; font-weight: 800; }
+.report-accordion-header small { min-width: 0; color: var(--muted); font-size: .8rem; }
+.accordion-arrow { min-width: 58px; color: var(--navy-2); font-size: .82rem; font-weight: 900; text-align: right; }
+.report-accordion-body { min-width: 0; padding: 18px; background: #f8fafb; }
+.report-accordion-body[hidden] { display: none !important; }
+.report-summary-mini { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-bottom: 15px; padding: 11px 14px; color: var(--muted); background: #fff; border: 1px solid var(--line); border-radius: 9px; font-size: .82rem; }
+.report-summary-mini strong { color: var(--ink); }
+.empty-report-card { padding: 38px 20px; background: white; border: 1px dashed #b9c5cf; border-radius: 12px; text-align: center; color: var(--muted); }
+.empty-report-card h2 { color: var(--ink); }
 .section-title-row { display: flex; align-items: end; justify-content: space-between; gap: 20px; margin-bottom: 16px; }
 .section-title-row h2, .panel h2 { margin-bottom: 0; letter-spacing: -.02em; font-size: 1.35rem; }
 .section-note { margin: 0; color: var(--muted); font-size: .82rem; }
@@ -136,6 +156,12 @@ footer { padding: 23px 20px calc(23px + env(safe-area-inset-bottom)); color: var
   .summary-card { padding: 13px 11px; }
   .summary-card strong { font-size: 1.2rem; }
   .article-section { margin-top: 28px; }
+  .selected-date-header { align-items: stretch; flex-direction: column; }
+  .report-accordion-header { min-height: 82px; grid-template-columns: 1fr auto; gap: 4px 10px; padding: 13px 12px; }
+  .report-accordion-header small { grid-column: 1 / -1; grid-row: 2; font-size: .72rem; }
+  .accordion-arrow { grid-column: 2; grid-row: 1; }
+  .report-accordion-body { padding: 12px 8px; }
+  .report-summary-mini { gap: 6px 12px; padding: 10px; }
   .article-item { padding: 13px 12px; }
   .grade-section { padding: 13px 10px; }
   .grade-header h3 { font-size: .92rem; line-height: 1.35; }
