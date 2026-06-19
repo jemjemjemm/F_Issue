@@ -1,0 +1,111 @@
+name: F-Issue Report
+
+on:
+  schedule:
+    # GitHub cron is UTC: 08:10 KST / 17:10 KST, every day including weekends.
+    - cron: "10 23 * * *"
+    - cron: "10 8 * * *"
+  workflow_dispatch:
+    inputs:
+      report_slot:
+        description: "morning or evening"
+        required: true
+        default: morning
+        type: choice
+        options: [morning, evening]
+      base_date:
+        description: "YYYY-MM-DD, optional. Asia/Seoul 기준"
+        required: false
+        type: string
+      force_refresh:
+        description: "기존 raw 데이터를 다시 수집"
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    env:
+      TZ: Asia/Seoul
+      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+      TELEGRAM_NOTIFY_ON_SUCCESS: ${{ vars.TELEGRAM_NOTIFY_ON_SUCCESS || 'false' }}
+      NAVER_CLIENT_ID: ${{ secrets.NAVER_CLIENT_ID }}
+      NAVER_CLIENT_SECRET: ${{ secrets.NAVER_CLIENT_SECRET }}
+      SERPAPI_KEY: ${{ secrets.SERPAPI_KEY }}
+      GOOGLE_CSE_KEY: ${{ secrets.GOOGLE_CSE_KEY }}
+      GOOGLE_CSE_ID: ${{ secrets.GOOGLE_CSE_ID }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Collect news
+        run: >-
+          python scripts/collect_news.py
+          --slot "${{ inputs.report_slot || '' }}"
+          --base-date "${{ inputs.base_date || '' }}"
+          --force-refresh "${{ inputs.force_refresh || 'false' }}"
+
+      - name: Build report
+        run: >-
+          python scripts/build_report.py
+          --slot "${{ inputs.report_slot || '' }}"
+          --base-date "${{ inputs.base_date || '' }}"
+
+      - name: Run tests
+        run: python -m unittest discover -s tests -v
+
+      - name: Commit generated report files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data reports
+          git diff --cached --quiet || git commit -m "Update F-Issue Report"
+          git push
+
+      - name: Prepare Pages artifact
+        run: |
+          mkdir -p _site
+          cp index.html _site/
+          cp -R assets reports _site/
+          mkdir -p _site/data/reports
+          cp data/report-index.json _site/data/
+          cp data/reports/*.json _site/data/reports/
+          touch _site/.nojekyll
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload GitHub Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Deploy GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: Notify workflow failure
+        if: failure()
+        continue-on-error: true
+        run: python scripts/telegram_notify.py --message "GitHub Actions 실행 또는 GitHub Pages 배포에 실패했습니다. Actions 로그를 확인해 주세요."
