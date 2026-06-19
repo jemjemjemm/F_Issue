@@ -88,11 +88,6 @@ h1 { margin-bottom: 4px; letter-spacing: -.035em; font-size: clamp(2rem, 5vw, 3.
 details.snippet { margin-top: 7px; color: var(--muted); font-size: .76rem; }
 details.snippet summary { cursor: pointer; color: var(--navy-2); }
 .empty-state { padding: 38px 20px; background: white; border: 1px dashed #b9c5cf; border-radius: 12px; text-align: center; color: var(--muted); }
-.warning-section, .telegram-section, .calendar-section { margin-top: 18px; }
-.warning-section h2, .telegram-section h2 { margin-bottom: 12px; }
-.warning-item { margin-top: 9px; padding: 12px 14px; border-left: 4px solid #d89c34; background: #fff9ec; border-radius: 6px; font-size: .85rem; }
-.warning-item p { margin-bottom: 3px; }
-.warning-detail { color: var(--muted); font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: .72rem; }
 .quiet-message { margin: 0; color: var(--muted); font-size: .86rem; }
 .calendar-section { margin-top: 18px; padding-bottom: 25px; }
 .calendar-header { display: flex; justify-content: space-between; align-items: end; gap: 15px; }

@@ -173,13 +173,6 @@ function renderArticlesByGrade(articles) {
   bindGradeToggleButtons();
 }
 
-function renderWarnings(report) {
-  const warnings = report.collection_warnings || [];
-  $("#warnings-list").innerHTML = warnings.length ? warnings.map(item => `<div class="warning-item"><p><strong>${escapeHTML(item.portal || "system")}${item.query ? ` · ${escapeHTML(item.query)}` : ""}</strong></p><p>${escapeHTML(item.user_message || item.message)}</p>${item.technical_detail ? `<p class="warning-detail">${escapeHTML(item.technical_detail)}</p>` : ""}</div>`).join("") : `<p class="quiet-message">기록된 수집 경고가 없습니다.</p>`;
-  const logs = report.telegram_alert_log || [];
-  $("#telegram-log").innerHTML = logs.length ? logs.map(item => `<div class="warning-item"><p>${escapeHTML(item.message || item)}</p></div>`).join("") : `<p class="quiet-message">발송 기록이 없습니다.</p>`;
-}
-
 function renderNotice(mode) {
   const past = mode === "past";
   $("#today-notice").className = past ? "past-report-notice" : "today-only-notice";
@@ -191,8 +184,6 @@ function renderNotice(mode) {
 
 function clearReportRoot() {
   $("#article-groups").innerHTML = "";
-  $("#warnings-list").innerHTML = `<p class="quiet-message">표시 중인 리포트가 없습니다.</p>`;
-  $("#telegram-log").innerHTML = `<p class="quiet-message">표시 중인 리포트가 없습니다.</p>`;
 }
 
 function renderTodayOnlyNotice(message) {
@@ -215,7 +206,6 @@ function renderReport(reportData, options = {}) {
   renderNotice(state.viewingMode);
   renderSummary(reportData, visibleArticles);
   renderArticlesByGrade(visibleArticles);
-  renderWarnings(reportData);
   $("#loading").hidden = true;
   $("#error-panel").hidden = true;
   $("#dashboard").hidden = false;
