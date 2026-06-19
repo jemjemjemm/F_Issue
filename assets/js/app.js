@@ -192,39 +192,8 @@ function bindGradeToggleEvents() {
   });
 }
 
-function renderNotice(mode) {
-  const past = mode === "past";
-  $("#today-notice").className = past ? "past-report-notice" : "today-only-notice";
-  $("#today-notice").innerHTML = past
-    ? `<span>선택한 과거 리포트를 표시 중입니다. 오늘 기사로 돌아가려면 "오늘 기사 보기"를 누르세요.</span><button class="return-today-btn" type="button" data-return-today>오늘 기사 보기</button>`
-    : `<span>오늘 리포트를 표시 중입니다. 과거 기사는 화면 아래 Calendar에서 날짜를 선택해 확인하세요.</span>`;
-  bindReturnTodayButton();
-}
-
 function bindReturnTodayButton() {
   document.querySelectorAll("[data-return-today]").forEach(button => button.addEventListener("click", showTodayReport));
-}
-
-function renderSelectedDateHeader(baseDate, loadedReports) {
-  const summary = loadedReports.map(({meta, data}) => `${meta.slot === "morning" ? "Morning" : "Evening"} ${formatNumber(data.total_deduped_count ?? data.articles?.length)}건`).join(" / ");
-  $("#report-slot").textContent = "";
-  $("#report-period-title").textContent = `선택 날짜: ${formatShortDate(baseDate)}`;
-  $("#period-range").textContent = summary ? `해당 날짜 리포트: ${summary}` : "해당 날짜의 리포트가 없습니다.";
-  const latestGenerated = loadedReports.map(item => item.data.generated_at).filter(Boolean).sort().at(-1);
-  $("#generated-at").textContent = latestGenerated ? `업데이트 ${displayDateTime(latestGenerated)}` : "";
-  $("#report-selector-root").innerHTML = summary
-    ? `<p class="selected-report-summary"><strong>${escapeHTML(formatShortDate(baseDate))}</strong><span>${escapeHTML(summary)}</span></p>`
-    : `<p class="quiet-message"><strong>${escapeHTML(formatShortDate(baseDate))}</strong> · 해당 날짜의 리포트가 없습니다.</p>`;
-}
-
-function renderSummaryForReports(baseDate, loadedReports) {
-  const combined = loadedReports.reduce((summary, {data}) => {
-    summary.total_deduped_count += getTotalCount(data);
-    for (const grade of ["A", "B", "C"]) summary.grade_counts[grade] += getGradeCount(data, grade);
-    return summary;
-  }, {total_deduped_count: 0, grade_counts: {A: 0, B: 0, C: 0}});
-  $("#summary-grid").innerHTML = renderGradeSummary(combined);
-  $("#portal-summary").hidden = true;
 }
 
 function renderDateReportsAccordion(baseDate, loadedReports, mode) {
@@ -248,13 +217,6 @@ function renderDateReportsAccordion(baseDate, loadedReports, mode) {
   bindReturnTodayButton();
 }
 
-function renderCalendarReportSelector(baseDate, reports) {
-  const summary = reports.map(report => `${report.slot === "morning" ? "Morning" : "Evening"} ${formatNumber(report.total_deduped_count)}건`).join(" / ");
-  $("#calendar-report-selector").innerHTML = summary
-    ? `<p class="selector-title">${escapeHTML(formatShortDate(baseDate))} 선택됨</p><p class="quiet-message">${escapeHTML(summary)} · 위 기사 영역에 표시됩니다.</p>`
-    : `<p class="quiet-message"><strong>${escapeHTML(formatShortDate(baseDate))}</strong> · 해당 날짜의 리포트가 없습니다.</p>`;
-}
-
 function markSelectedCalendarDate(baseDate) {
   state.selectedDate = baseDate;
   renderCalendar($("#calendar-grid"), buildCalendar(state.currentYear, state.currentMonth));
@@ -265,14 +227,10 @@ async function loadAndRenderDate(baseDate, {scroll = false} = {}) {
   state.selectedDate = baseDate;
   state.viewingMode = baseDate === state.today ? "today" : "past";
   markSelectedCalendarDate(baseDate);
-  renderCalendarReportSelector(baseDate, reports);
   const results = await Promise.allSettled(reports.map(async meta => ({meta, data: await loadReportByPath(meta.json_path)})));
   const loadedReports = results.filter(result => result.status === "fulfilled").map(result => result.value);
   results.filter(result => result.status === "rejected").forEach(result => console.error("[F-Issue] failed to load report:", result.reason));
   state.loadedReports = loadedReports;
-  renderNotice(state.viewingMode);
-  renderSelectedDateHeader(baseDate, loadedReports);
-  renderSummaryForReports(baseDate, loadedReports);
   renderDateReportsAccordion(baseDate, loadedReports, state.viewingMode);
   $("#loading").hidden = true;
   $("#error-panel").hidden = true;

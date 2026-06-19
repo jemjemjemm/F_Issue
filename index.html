@@ -6,8 +6,8 @@
   <meta name="theme-color" content="#17324d">
   <meta name="description" content="F-Issue 뉴스 모니터링">
   <title>F-Issue Report</title>
-  <link rel="stylesheet" href="assets/css/style.css?v=20260619-3">
-  <script defer src="assets/js/app.js?v=20260619-3"></script>
+  <link rel="stylesheet" href="assets/css/style.css?v=20260619-4">
+  <script defer src="assets/js/app.js?v=20260619-4"></script>
 </head>
 <body>
   <header class="site-header">
@@ -24,24 +24,6 @@
     <section id="error-panel" class="panel error-panel" hidden aria-live="assertive"></section>
 
     <div id="dashboard" hidden>
-      <section id="today-notice" aria-live="polite"></section>
-
-      <section class="report-heading" aria-labelledby="report-period-title">
-        <div>
-          <p id="report-slot" class="slot-label"></p>
-          <h2 id="report-period-title"></h2>
-          <p id="period-range" class="period-range"></p>
-        </div>
-        <p id="generated-at" class="generated-at"></p>
-      </section>
-
-      <section id="summary-root" aria-label="수집 현황 요약">
-        <div id="summary-grid" class="summary-grid"></div>
-        <div id="portal-summary" class="panel compact-panel" aria-label="포털별 수집 현황"></div>
-      </section>
-
-      <section id="report-selector-root" class="panel report-selector-root" aria-label="현재 날짜 리포트 선택"></section>
-
       <section id="report-root" class="article-section" aria-live="polite"></section>
 
       <section id="calendar-root" class="panel calendar-section" aria-labelledby="calendar-title">
@@ -58,7 +40,6 @@
           <button id="calendar-next" type="button" aria-label="다음 달">다음 달 ›</button>
         </div>
         <div id="calendar-grid" class="calendar-grid" role="grid" aria-label="리포트 달력"></div>
-        <div id="calendar-report-selector" class="calendar-report-selector" aria-live="polite"></div>
       </section>
     </div>
   </main>
