@@ -58,11 +58,56 @@ class ClassificationTests(unittest.TestCase):
         self.assertEqual(get_media_grade("YTN"), "B")
         self.assertEqual(get_media_grade("지역매체"), "C")
 
+    def test_updated_media_grades(self):
+        grade_a = [
+            "조선일보", "중앙일보", "동아일보", "한국일보", "한겨레", "경향신문",
+            "국민일보", "서울신문", "세계일보", "문화일보", "내일신문",
+            "매일경제", "매경", "한국경제", "한경", "서울경제", "머니투데이",
+            "이데일리", "파이낸셜 뉴스", "헤럴드 경제", "아시아경제", "전자신문",
+            "디지털타임스", "연합뉴스", "뉴시스", "뉴스1", "news1",
+        ]
+        grade_b = [
+            "뉴스핌", "아시아투데이", "아주경제", "이투데이", "뉴스토마토",
+            "KBS", "MBC", "SBS", "JTBC", "채널A", "TV조선", "MBN",
+            "더벨", "인베스트조선", "연합인포맥스", "조선Biz", "조선비즈",
+            "EBN", "뉴데일리", "데일리안", "YTN", "ytn", "연합뉴스TV",
+            "연합뉴스 tv",
+        ]
+        grade_c = [
+            "매일경제TV", "한국경제TV", "MTN", "더구루", "신아일보", "한스경제",
+            "매일일보", "비즈워치", "조세일보", "블로터", "미디어펜",
+            "알 수 없는 매체",
+        ]
+        for source in grade_a:
+            with self.subTest(source=source):
+                self.assertEqual(get_media_grade(source), "A")
+        for source in grade_b:
+            with self.subTest(source=source):
+                self.assertEqual(get_media_grade(source), "B")
+        for source in grade_c:
+            with self.subTest(source=source):
+                self.assertEqual(get_media_grade(source), "C")
+
+    def test_similar_media_names_are_not_partially_matched(self):
+        self.assertEqual(get_media_grade("연합뉴스TV"), "B")
+        self.assertEqual(get_media_grade("한국경제TV"), "C")
+        self.assertEqual(get_media_grade("매일경제TV"), "C")
+        self.assertEqual(get_media_grade("조선Biz"), "B")
+
     def test_excluded_and_review_status(self):
         excluded = assess_quality({"title": "오늘의 스포츠 유가 소식 담합", "snippet": "", "published_at": "x", "source": "YTN", "url": "https://x"})
         self.assertEqual(excluded[0], "excluded")
         review = assess_quality({"title": "정유사 담합 조사", "snippet": "", "published_at": "", "source": "연합뉴스", "url": "https://x"})
         self.assertEqual(review[0], "review")
+
+    def test_food_price_article_is_excluded(self):
+        item = {
+            "title": "브라질산 계란 수입 돼지 닭고기 할당관세… 여름철 먹거리 물가 잡는다",
+            "snippet": "정부가 여름철 장바구니 물가 안정을 위해 농축산물 할당관세를 추진한다.",
+            "published_at": "2026-06-19T12:00:00+09:00", "source": "연합뉴스",
+            "url": "https://example.com/food-price",
+        }
+        self.assertEqual(assess_quality(item)[0], "excluded")
 
     def test_all_required_queries_are_configured(self):
         self.assertEqual(len(KEYWORDS), 13)
@@ -95,6 +140,26 @@ class ReportTests(unittest.TestCase):
             "collected_at": "2026-06-19T08:10:00+09:00", "snippet": "",
         }
         self.assertEqual(process_articles([item], start, end), [])
+
+    def test_excluded_article_is_not_exposed_but_relevant_article_is(self):
+        start, end = get_period("2026-06-19", "evening")
+        food_item = {
+            "title": "브라질산 계란 수입 돼지 닭고기 할당관세… 여름철 먹거리 물가 잡는다",
+            "snippet": "정부가 여름철 장바구니 물가 안정을 위해 농축산물 할당관세를 추진한다.",
+            "published_at": "2026-06-19T12:00:00+09:00", "source": "연합뉴스",
+            "url": "https://example.com/food-price",
+        }
+        relevant_item = {
+            "title": "공정위, 정유사 유가 담합 의혹 조사 착수",
+            "snippet": "휘발유와 경유 등 석유제품 가격 담합 여부를 들여다본다.",
+            "published_at": "2026-06-19T12:00:00+09:00", "source": "연합뉴스",
+            "url": "https://example.com/oil-collusion",
+        }
+        self.assertEqual(process_articles([food_item], start, end), [])
+        self.assertNotEqual(assess_quality(relevant_item)[0], "excluded")
+        articles = process_articles([relevant_item], start, end)
+        self.assertEqual(len(articles), 1)
+        self.assertEqual(articles[0]["url"], relevant_item["url"])
 
     def test_zero_result_report_is_still_complete(self):
         raw = {"items": [], "keywords": KEYWORDS, "portal_counts": {}, "collection_warnings": []}

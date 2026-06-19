@@ -23,12 +23,16 @@ def format_report_title(base_date: str, slot: str) -> str:
     return f"'{parsed:%y}.{parsed.month}.{parsed.day}. {slot_label}"
 
 
-def process_articles(raw_items: list[dict], start: datetime, end: datetime) -> list[dict]:
+def _process_articles(raw_items: list[dict], start: datetime, end: datetime) -> tuple[list[dict], int]:
     eligible = [item for item in raw_items if not item.get("published_at") or is_in_period(item.get("published_at"), start, end)]
     articles = []
+    excluded_count = 0
     for item in deduplicate(eligible):
         source = normalize_source(item.get("source", ""))
         status, label, reason, matches = assess_quality(item)
+        if status == "excluded":
+            excluded_count += 1
+            continue
         canonical = item.get("canonical_url") or item.get("url", "")
         stable = f"{item.get('duplicate_key')}::{canonical}"
         item.update({
@@ -50,12 +54,17 @@ def process_articles(raw_items: list[dict], start: datetime, end: datetime) -> l
 
     grade_order = {"A": 0, "B": 1, "C": 2}
     articles.sort(key=lambda a: (grade_order[a["grade"]], media_sort_index(a["source_normalized"], a["grade"]), a["source_normalized"].casefold(), -timestamp(a)))
+    return articles, excluded_count
+
+
+def process_articles(raw_items: list[dict], start: datetime, end: datetime) -> list[dict]:
+    articles, _ = _process_articles(raw_items, start, end)
     return articles
 
 
 def build_report(raw: dict, base_date: str, slot: str) -> dict:
     start, end = get_period(base_date, slot)
-    articles = process_articles(raw.get("items", []), start, end)
+    articles, excluded_count = _process_articles(raw.get("items", []), start, end)
     status_counts = Counter(item["quality_status"] for item in articles)
     grade_counts = Counter(item["grade"] for item in articles)
     query_counts = Counter(query for item in articles for query in item.get("queries", []))
@@ -66,7 +75,7 @@ def build_report(raw: dict, base_date: str, slot: str) -> dict:
         "period_label": period_label(start, end), "generated_at": now_kst().isoformat(),
         "keywords": raw.get("keywords", []), "total_raw_count": len(raw.get("items", [])),
         "total_deduped_count": len(articles), "total_ok_count": status_counts["ok"],
-        "total_review_count": status_counts["review"], "total_excluded_count": status_counts["excluded"],
+        "total_review_count": status_counts["review"], "total_excluded_count": excluded_count,
         "grade_counts": {grade: grade_counts[grade] for grade in "ABC"},
         "portal_counts": {portal: raw.get("portal_counts", {}).get(portal, 0) for portal in ("naver", "daum", "google")},
         "query_counts": dict(sorted(query_counts.items())),
