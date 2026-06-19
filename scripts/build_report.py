@@ -75,6 +75,7 @@ def report_index_entry(report: dict) -> dict:
         "base_date": report["base_date"], "slot": report["slot"],
         "label": f"{report['base_date']} {report['slot'].title()}", "period": report["period_label"],
         "html_path": f"reports/{stem}.html", "json_path": f"data/reports/{stem}.json",
+        "period_start": report["period_start"], "period_end": report["period_end"],
         "total_deduped_count": report["total_deduped_count"], "total_ok_count": report["total_ok_count"],
         "total_review_count": report["total_review_count"], "total_excluded_count": report["total_excluded_count"],
         "grade_counts": report["grade_counts"], "generated_at": report["generated_at"],

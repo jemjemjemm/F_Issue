@@ -26,6 +26,8 @@
     <section id="error-panel" class="panel error-panel" hidden aria-live="assertive"></section>
 
     <div id="dashboard" hidden>
+      <section id="today-notice" aria-live="polite"></section>
+
       <section class="report-heading" aria-labelledby="report-period-title">
         <div>
           <p id="report-slot" class="slot-label"></p>
@@ -35,10 +37,14 @@
         <p id="generated-at" class="generated-at"></p>
       </section>
 
-      <section id="summary-grid" class="summary-grid" aria-label="수집 현황 요약"></section>
-      <section id="portal-summary" class="panel compact-panel" aria-label="포털별 수집 현황"></section>
+      <section id="summary-root" aria-label="수집 현황 요약">
+        <div id="summary-grid" class="summary-grid"></div>
+        <div id="portal-summary" class="panel compact-panel" aria-label="포털별 수집 현황"></div>
+      </section>
 
-      <section id="article-section" class="article-section" aria-labelledby="articles-title">
+      <section id="report-selector-root" class="panel report-selector-root" aria-label="현재 날짜 리포트 선택"></section>
+
+      <section id="report-root" class="article-section" aria-labelledby="articles-title">
         <div class="section-title-row">
           <div>
             <p class="eyebrow dark">FULL COVERAGE</p>
@@ -49,17 +55,17 @@
         <div id="article-groups"></div>
       </section>
 
-      <section id="warnings-section" class="panel warning-section" aria-labelledby="warnings-title">
+      <section id="warnings-root" class="panel warning-section" aria-labelledby="warnings-title">
         <h2 id="warnings-title">Collection Warnings</h2>
         <div id="warnings-list"></div>
       </section>
 
-      <section id="telegram-section" class="panel telegram-section" aria-labelledby="telegram-title">
+      <section id="telegram-log-root" class="panel telegram-section" aria-labelledby="telegram-title">
         <h2 id="telegram-title">Telegram Alert Log</h2>
         <div id="telegram-log"></div>
       </section>
 
-      <section class="panel calendar-section" aria-labelledby="calendar-title">
+      <section id="calendar-root" class="panel calendar-section" aria-labelledby="calendar-title">
         <div class="calendar-header">
           <div>
             <p class="eyebrow dark">ARCHIVE</p>
@@ -80,4 +86,3 @@
   <footer>F-Issue Report · 공개 뉴스 검색 결과 기반</footer>
 </body>
 </html>
-
