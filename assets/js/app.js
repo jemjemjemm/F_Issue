@@ -9,7 +9,6 @@ const $ = selector => document.querySelector(selector);
 const escapeHTML = (value = "") => String(value).replace(/[&<>'"]/g, char => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"})[char]);
 const safeURL = (value = "") => /^https?:\/\//i.test(value) ? value : "";
 const formatNumber = value => Number(value || 0).toLocaleString("ko-KR");
-const portalNames = {naver: "네이버", daum: "다음", google: "구글"};
 const gradeTitles = {A: "주요 종합지·경제지·통신사", B: "중견 경제지·전문지·방송사", C: "기타매체"};
 
 function formatShortDate(dateString) {
@@ -58,11 +57,6 @@ function getTodayKSTDateString() {
   }).format(new Date());
 }
 
-function displayDateTime(value) {
-  if (!value) return "확인 불가";
-  return formatShortDateTime(value);
-}
-
 async function fetchJSON(path) {
   const response = await fetch(path, {cache: "no-store"});
   if (!response.ok) throw new Error(`${path}을(를) 불러오지 못했습니다. (${response.status})`);
@@ -100,10 +94,8 @@ function renderArticle(article) {
   const titleMarkup = link
     ? `<a class="article-link" href="${escapeHTML(link)}" target="_blank" rel="noopener noreferrer">${title}</a>`
     : `<span class="article-link">${title}</span>`;
-  const portals = (article.portals || []).map(item => portalNames[item] || item).join(" · ") || "확인 불가";
-  const queries = (article.queries || []).join(" · ") || "확인 불가";
   const snippet = article.snippet ? `<details class="snippet"><summary>검색 결과 문맥 보기</summary><p>${escapeHTML(article.snippet)}</p></details>` : "";
-  return `<li class="article-item"><div class="article-main">${titleMarkup}<div class="article-meta"><span>${escapeHTML(article.source_normalized || article.source || "매체 미상")}</span><span>${escapeHTML(displayDateTime(article.published_at))}</span><span>발견: ${escapeHTML(portals)}</span><span>검색어: ${escapeHTML(queries)}</span></div>${snippet}</div></li>`;
+  return `<li class="article-item"><div class="article-main">${titleMarkup}${snippet}</div></li>`;
 }
 
 function renderArticlesBySource(articles) {

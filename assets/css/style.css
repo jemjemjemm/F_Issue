@@ -108,7 +108,6 @@ h1 { margin-bottom: 4px; letter-spacing: -.035em; font-size: clamp(2rem, 5vw, 3.
 .article-main { min-width: 0; }
 .article-link { display: block; color: #142e47; text-decoration: none; font-weight: 700; line-height: 1.48; padding: 1px 0 3px; }
 .article-link:hover { color: #1e658f; text-decoration: underline; }
-.article-meta { display: flex; flex-wrap: wrap; gap: 3px 10px; color: var(--muted); font-size: .74rem; }
 .article-reason { margin: 5px 0 0; color: #6c5860; font-size: .75rem; }
 details.snippet { margin-top: 7px; color: var(--muted); font-size: .76rem; }
 details.snippet summary { cursor: pointer; color: var(--navy-2); }
