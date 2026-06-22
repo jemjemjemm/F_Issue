@@ -1,11 +1,11 @@
 """Asia/Seoul report-slot and publication-time helpers."""
 from __future__ import annotations
 
-from datetime import date, datetime, time
+from datetime import date, datetime, time, timedelta
 from zoneinfo import ZoneInfo
 
 KST = ZoneInfo("Asia/Seoul")
-VALID_SLOTS = {"morning", "evening"}
+VALID_SLOTS = {"morning", "evening", "night"}
 
 
 def now_kst() -> datetime:
@@ -23,7 +23,7 @@ def resolve_slot(value: str | None = None, now: datetime | None = None) -> str:
     slot = (value or "").strip().lower()
     if slot:
         if slot not in VALID_SLOTS:
-            raise ValueError("report_slot must be morning or evening")
+            raise ValueError("report_slot must be morning, evening or night")
         return slot
     current = (now or now_kst()).astimezone(KST)
     # Scheduled runs are 08:10 and 17:10. For delayed runs, use the nearest
@@ -39,7 +39,9 @@ def get_period(base_date: date | str, slot: str) -> tuple[datetime, datetime]:
             datetime.combine(day, time(0), KST),
             datetime.combine(day, time(8), KST),
         )
-    return datetime.combine(day, time(8), KST), datetime.combine(day, time(17), KST)
+    if slot == "evening":
+        return datetime.combine(day, time(8), KST), datetime.combine(day, time(17), KST)
+    return datetime.combine(day, time(17), KST), datetime.combine(day + timedelta(days=1), time(0), KST)
 
 
 def parse_datetime(value: str | datetime | None) -> datetime | None:

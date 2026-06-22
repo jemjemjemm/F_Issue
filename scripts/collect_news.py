@@ -222,26 +222,43 @@ def main() -> int:
     parser.add_argument("--slot", default="")
     parser.add_argument("--base-date", default="")
     parser.add_argument("--force-refresh", default="false")
+    parser.add_argument("--include-previous-night", default="false")
     parser.add_argument("--delay", type=float, default=0.15)
     args = parser.parse_args()
     slot = resolve_slot(args.slot)
     base_date = resolve_base_date(args.base_date)
-    start, end = get_period(base_date, slot)
-    path = ROOT / "data" / "raw" / f"{base_date.isoformat()}-{slot}-raw.json"
-    if path.exists() and args.force_refresh.lower() != "true":
-        print(f"Raw file already exists: {path.relative_to(ROOT)} (use --force-refresh true)")
+    targets = [(base_date, slot)]
+    if slot == "morning" and args.include_previous_night.lower() == "true":
+        targets.append((base_date - timedelta(days=1), "night"))
+    paths = [ROOT / "data" / "raw" / f"{day.isoformat()}-{target_slot}-raw.json" for day, target_slot in targets]
+    force_refresh = args.force_refresh.lower() == "true"
+    if all(path.exists() for path in paths) and not force_refresh:
+        print("Raw files already exist: " + ", ".join(str(path.relative_to(ROOT)) for path in paths))
         return 0
     try:
-        items, warnings, portal_counts = collect_all(args.delay)
-        payload = {
-            "base_date": base_date.isoformat(), "slot": slot,
-            "period_start": start.isoformat(), "period_end": end.isoformat(),
-            "collected_at": now_kst().isoformat(), "keywords": KEYWORDS,
-            "portal_counts": portal_counts, "collection_warnings": warnings, "items": items,
-        }
-        path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
-        print(f"Collected {len(items)} raw results with {len(warnings)} warnings -> {path.relative_to(ROOT)}")
+        existing_path = next((path for path in paths if path.exists()), None)
+        if existing_path and not force_refresh:
+            existing = json.loads(existing_path.read_text(encoding="utf-8"))
+            items = existing.get("items", [])
+            warnings = existing.get("collection_warnings", [])
+            portal_counts = existing.get("portal_counts", {})
+            collected_at = existing.get("collected_at") or now_kst().isoformat()
+        else:
+            items, warnings, portal_counts = collect_all(args.delay)
+            collected_at = now_kst().isoformat()
+        for (target_date, target_slot), path in zip(targets, paths):
+            if path.exists() and not force_refresh:
+                continue
+            start, end = get_period(target_date, target_slot)
+            payload = {
+                "base_date": target_date.isoformat(), "slot": target_slot,
+                "period_start": start.isoformat(), "period_end": end.isoformat(),
+                "collected_at": collected_at, "keywords": KEYWORDS,
+                "portal_counts": portal_counts, "collection_warnings": warnings, "items": items,
+            }
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+            print(f"Collected {len(items)} raw results with {len(warnings)} warnings -> {path.relative_to(ROOT)}")
         return 0
     except Exception as exc:
         print(f"Collection failed: {exc}", file=sys.stderr)

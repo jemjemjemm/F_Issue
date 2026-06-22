@@ -5,7 +5,7 @@ import argparse
 import hashlib
 import json
 from collections import Counter
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 
 from dedupe import deduplicate
@@ -19,7 +19,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def format_report_title(base_date: str, slot: str) -> str:
     parsed = datetime.strptime(base_date, "%Y-%m-%d")
-    slot_label = "Evening Report" if slot == "evening" else "Morning Report"
+    slot_label = {"morning": "Morning Report", "evening": "Evening Report", "night": "Night Report"}[slot]
     return f"'{parsed:%y}.{parsed.month}.{parsed.day}. {slot_label}"
 
 
@@ -109,7 +109,8 @@ def update_index(report: dict) -> None:
     entry = report_index_entry(report)
     entries = [old for old in entries if not (old.get("base_date") == entry["base_date"] and old.get("slot") == entry["slot"])]
     entries.append(entry)
-    entries.sort(key=lambda x: (x.get("base_date", ""), 1 if x.get("slot") == "evening" else 0), reverse=True)
+    slot_order = {"morning": 0, "evening": 1, "night": 2}
+    entries.sort(key=lambda x: (x.get("base_date", ""), slot_order.get(x.get("slot"), -1)), reverse=True)
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(entries, ensure_ascii=False, indent=2), encoding="utf-8")
 
@@ -128,13 +129,31 @@ location.replace('../index.html?report=' + encodeURIComponent('data/reports/' + 
 <body><p><a href=\"../index.html\">F-Issue Report에서 이 리포트 열기</a></p></body></html>""", encoding="utf-8")
 
 
+def build_previous_night(morning_date: str) -> None:
+    night_date = (datetime.strptime(morning_date, "%Y-%m-%d").date() - timedelta(days=1)).isoformat()
+    raw_path = ROOT / "data" / "raw" / f"{night_date}-night-raw.json"
+    if not raw_path.exists():
+        raise FileNotFoundError(f"Raw data not found: {raw_path}")
+    raw = json.loads(raw_path.read_text(encoding="utf-8"))
+    report = build_report(raw, night_date, "night")
+    out = ROOT / "data" / "reports" / f"{night_date}-night.json"
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
+    update_index(report)
+    write_report_html(report)
+    print(f"Built {report['total_deduped_count']} articles -> {out.relative_to(ROOT)}")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--slot", default="")
     parser.add_argument("--base-date", default="")
+    parser.add_argument("--include-previous-night", default="false")
     args = parser.parse_args()
     slot = resolve_slot(args.slot)
     base_date = resolve_base_date(args.base_date).isoformat()
+    if slot == "morning" and args.include_previous_night.lower() == "true":
+        build_previous_night(base_date)
     raw_path = ROOT / "data" / "raw" / f"{base_date}-{slot}-raw.json"
     if not raw_path.exists():
         raise FileNotFoundError(f"Raw data not found: {raw_path}")

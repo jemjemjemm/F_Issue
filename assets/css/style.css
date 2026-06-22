@@ -135,6 +135,7 @@ details.snippet summary { cursor: pointer; color: var(--navy-2); }
 .calendar-badge { display: inline-flex; min-width: 19px; padding: 1px 4px; justify-content: center; border-radius: 4px; font-size: .62rem; font-weight: 900; }
 .calendar-badge.morning { color: #25597e; background: #d9eaf5; }
 .calendar-badge.evening { color: #6a4c20; background: #f5e2b9; }
+.calendar-badge.night { color: #fff; background: #334155; }
 .calendar-count { display: block; margin-top: 4px; color: var(--muted); font-size: .67rem; }
 .calendar-report-selector { min-height: 46px; margin-top: 15px; padding: 13px; border-radius: 9px; background: var(--soft); }
 .selector-title { margin: 0 0 9px; font-size: .87rem; font-weight: 800; }

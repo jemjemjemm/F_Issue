@@ -22,7 +22,7 @@ function formatShortDate(dateString) {
 }
 
 function formatReportTitle(baseDate, slot) {
-  const slotLabel = slot === "evening" ? "Evening Report" : "Morning Report";
+  const slotLabel = {morning: "Morning Report", evening: "Evening Report", night: "Night Report"}[slot] || "Morning Report";
   return `${formatShortDate(baseDate)} ${slotLabel}`;
 }
 
@@ -64,7 +64,7 @@ async function fetchJSON(path) {
 }
 
 function isReportPath(path) {
-  return /^data\/reports\/[0-9]{4}-[0-9]{2}-[0-9]{2}-(morning|evening)\.json$/.test(path || "");
+  return /^data\/reports\/[0-9]{4}-[0-9]{2}-[0-9]{2}-(morning|evening|night)\.json$/.test(path || "");
 }
 
 async function loadReportByPath(jsonPath) {
@@ -78,7 +78,7 @@ async function loadReportIndex() {
 }
 
 function sortReportsBySlotPriority(a, b) {
-  const priority = {morning: 0, evening: 1};
+  const priority = {morning: 0, evening: 1, night: 2};
   return (priority[a.slot] ?? 9) - (priority[b.slot] ?? 9);
 }
 
@@ -195,7 +195,7 @@ function renderDateReportsAccordion(baseDate, loadedReports, mode) {
     bindReturnTodayButton();
     return;
   }
-  const latestSlot = loadedReports.some(item => item.meta.slot === "evening") ? "evening" : "morning";
+  const latestSlot = loadedReports.some(item => item.meta.slot === "night") ? "night" : loadedReports.some(item => item.meta.slot === "evening") ? "evening" : "morning";
   const items = loadedReports
     .sort((a, b) => sortReportsBySlotPriority(a.meta, b.meta))
     .map(({meta, data}) => renderReportAccordionItem(meta, data, mode === "today" && meta.slot === latestSlot))
@@ -262,9 +262,10 @@ function renderCalendar(container, calendarData) {
     if (!item) return `<div class="calendar-day empty" role="gridcell"></div>`;
     const morning = item.reports.find(report => report.slot === "morning");
     const evening = item.reports.find(report => report.slot === "evening");
+    const night = item.reports.find(report => report.slot === "night");
     const total = item.reports.reduce((sum, report) => sum + Number(report.total_deduped_count || 0), 0);
     const classes = ["calendar-day", item.reports.length ? "has-report" : "", item.date === state.today ? "today" : "", item.date === state.selectedDate ? "selected" : ""].filter(Boolean).join(" ");
-    const badges = item.reports.length ? `<span class="calendar-badges">${morning ? `<span class="calendar-badge morning">M</span>` : ""}${evening ? `<span class="calendar-badge evening">E</span>` : ""}</span><span class="calendar-count">${formatNumber(total)}건</span>` : "";
+    const badges = item.reports.length ? `<span class="calendar-badges">${morning ? `<span class="calendar-badge morning">M</span>` : ""}${evening ? `<span class="calendar-badge evening">E</span>` : ""}${night ? `<span class="calendar-badge night">N</span>` : ""}</span><span class="calendar-count">${formatNumber(total)}건</span>` : "";
     return `<button class="${classes}" type="button" role="gridcell" data-calendar-date="${item.date}" aria-pressed="${item.date === state.selectedDate}" aria-label="${item.date}, ${item.reports.length ? `리포트 ${item.reports.length}개` : "리포트 없음"}"><span class="day-number">${item.day}</span>${badges}</button>`;
   }).join("");
   container.innerHTML = weekdays + days;

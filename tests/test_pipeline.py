@@ -28,6 +28,13 @@ class TimeTests(unittest.TestCase):
         self.assertEqual(end.hour, 17)
         self.assertTrue(is_in_period(datetime(2026, 6, 19, 16, 59, tzinfo=KST), start, end))
 
+    def test_night_period_is_half_open(self):
+        start, end = get_period("2026-06-20", "night")
+        self.assertEqual(start.isoformat(), "2026-06-20T17:00:00+09:00")
+        self.assertEqual(end.isoformat(), "2026-06-21T00:00:00+09:00")
+        self.assertTrue(is_in_period(datetime(2026, 6, 20, 23, 59, 59, tzinfo=KST), start, end))
+        self.assertFalse(is_in_period(end, start, end))
+
 
 class DedupeTests(unittest.TestCase):
     def item(self, portal, source="연합뉴스", title="[속보] 정유사 담합 조사", url="https://example.com/a"):
@@ -118,6 +125,7 @@ class ReportTests(unittest.TestCase):
     def test_report_title_uses_short_date_and_slot(self):
         self.assertEqual(format_report_title("2026-06-19", "morning"), "'26.6.19. Morning Report")
         self.assertEqual(format_report_title("2026-07-03", "evening"), "'26.7.3. Evening Report")
+        self.assertEqual(format_report_title("2026-06-20", "night"), "'26.6.20. Night Report")
 
     def test_unknown_publication_time_is_removed(self):
         start, end = get_period("2026-06-19", "morning")
