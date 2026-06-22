@@ -46,6 +46,21 @@ function getTotalCount(reportData) {
   return Number(reportData?.total_deduped_count ?? reportData?.articles?.length ?? 0);
 }
 
+function getDailySummary(loadedReports) {
+  if (!loadedReports.some(({meta, data}) => (data?.slot || meta?.slot) === "night")) return null;
+  return loadedReports.reduce((summary, {data}) => {
+    summary.total += getTotalCount(data);
+    for (const grade of "ABC") summary[grade] += getGradeCount(data, grade);
+    return summary;
+  }, {total: 0, A: 0, B: 0, C: 0});
+}
+
+function renderDailySummary(loadedReports) {
+  const summary = getDailySummary(loadedReports);
+  if (!summary) return "";
+  return `<span class="daily-summary">(총 ${formatNumber(summary.total)}건, A ${formatNumber(summary.A)}건, B ${formatNumber(summary.B)}건, C ${formatNumber(summary.C)}건)</span>`;
+}
+
 function renderGradeSummary(reportData) {
   return `<div class="grade-summary">총 ${formatNumber(getTotalCount(reportData))}건, A ${formatNumber(getGradeCount(reportData, "A"))}건, B ${formatNumber(getGradeCount(reportData, "B"))}건, C ${formatNumber(getGradeCount(reportData, "C"))}건</div>
     <div class="grade-caption"><div>A: ${gradeTitles.A}</div><div>B: ${gradeTitles.B}</div><div>C: ${gradeTitles.C}</div></div>`;
@@ -201,7 +216,7 @@ function renderDateReportsAccordion(baseDate, loadedReports, mode) {
     .map(({meta, data}) => renderReportAccordionItem(meta, data, mode === "today" && meta.slot === latestSlot))
     .join("");
   root.innerHTML = `<section class="selected-date-report">
-    <div class="selected-date-header"><div><p class="eyebrow dark">FULL COVERAGE</p><h2>${escapeHTML(formatShortDate(baseDate))}</h2></div>${mode === "past" ? `<button class="return-today-btn" type="button" data-return-today>오늘 기사 보기</button>` : ""}</div>
+    <div class="selected-date-header"><div><p class="eyebrow dark">FULL COVERAGE</p><div class="selected-date-title"><h2>${escapeHTML(formatShortDate(baseDate))}</h2>${renderDailySummary(loadedReports)}</div></div>${mode === "past" ? `<button class="return-today-btn" type="button" data-return-today>오늘 기사 보기</button>` : ""}</div>
     ${items}
   </section>`;
   bindReportAccordionEvents();

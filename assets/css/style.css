@@ -53,6 +53,8 @@ h1 { margin-bottom: 4px; letter-spacing: -.035em; font-size: clamp(2rem, 5vw, 3.
 .selected-date-report { min-width: 0; }
 .selected-date-header { display: flex; align-items: end; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
 .selected-date-header h2 { margin: 0; font-size: clamp(1.35rem, 3vw, 1.85rem); }
+.selected-date-title { display: flex; flex-wrap: wrap; align-items: baseline; gap: 7px 13px; }
+.daily-summary { color: var(--navy); font-size: clamp(.9rem, 1.8vw, 1.05rem); font-weight: 800; }
 .report-accordion-item { min-width: 0; margin-bottom: 14px; overflow: hidden; background: #fff; border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow); }
 .report-accordion-item.is-open { border-color: #9eb9cc; box-shadow: 0 10px 28px rgba(22, 56, 82, .1); }
 .report-accordion-header { display: grid; width: 100%; min-height: 76px; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 8px 18px; padding: 15px 18px; color: var(--ink); background: #fff; border: 0; cursor: pointer; text-align: left; }
@@ -157,6 +159,8 @@ footer { padding: 23px 20px calc(23px + env(safe-area-inset-bottom)); color: var
   .summary-grid { padding: 13px 12px; }
   .article-section { margin-top: 28px; }
   .selected-date-header { align-items: stretch; flex-direction: column; }
+  .selected-date-title { gap: 4px 9px; }
+  .daily-summary { font-size: .82rem; }
   .report-accordion-header { min-height: 82px; grid-template-columns: minmax(0, 1fr) auto; gap: 5px 10px; padding: 13px 12px; }
   .report-accordion-header small { grid-column: 1 / -1; font-size: .72rem; }
   .accordion-arrow { grid-column: 2; grid-row: 1; }
