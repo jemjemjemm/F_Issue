@@ -133,7 +133,11 @@ def build_previous_night(morning_date: str) -> None:
     night_date = (datetime.strptime(morning_date, "%Y-%m-%d").date() - timedelta(days=1)).isoformat()
     raw_path = ROOT / "data" / "raw" / f"{night_date}-night-raw.json"
     if not raw_path.exists():
-        raise FileNotFoundError(f"Raw data not found: {raw_path}")
+        # Historical reports can be reconstructed from the following morning's
+        # collection without duplicating large raw files in the repository.
+        raw_path = ROOT / "data" / "raw" / f"{morning_date}-morning-raw.json"
+    if not raw_path.exists():
+        raise FileNotFoundError(f"Raw data not found for {night_date} night")
     raw = json.loads(raw_path.read_text(encoding="utf-8"))
     report = build_report(raw, night_date, "night")
     out = ROOT / "data" / "reports" / f"{night_date}-night.json"

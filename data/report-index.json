@@ -21,6 +21,26 @@
   },
   {
     "base_date": "2026-06-21",
+    "slot": "night",
+    "label": "'26.6.21. Night Report",
+    "period": "2026-06-21 17:00 ~ 2026-06-22 00:00",
+    "html_path": "reports/2026-06-21-night.html",
+    "json_path": "data/reports/2026-06-21-night.json",
+    "period_start": "2026-06-21T17:00:00+09:00",
+    "period_end": "2026-06-22T00:00:00+09:00",
+    "total_deduped_count": 3,
+    "total_ok_count": 3,
+    "total_review_count": 0,
+    "total_excluded_count": 0,
+    "grade_counts": {
+      "A": 2,
+      "B": 0,
+      "C": 1
+    },
+    "generated_at": "2026-06-22T16:40:03.337116+09:00"
+  },
+  {
+    "base_date": "2026-06-21",
     "slot": "evening",
     "label": "'26.6.21. Evening Report",
     "period": "2026-06-21 08:00 ~ 2026-06-21 17:00",
@@ -58,6 +78,26 @@
       "C": 2
     },
     "generated_at": "2026-06-22T09:38:06.216589+09:00"
+  },
+  {
+    "base_date": "2026-06-20",
+    "slot": "night",
+    "label": "'26.6.20. Night Report",
+    "period": "2026-06-20 17:00 ~ 2026-06-21 00:00",
+    "html_path": "reports/2026-06-20-night.html",
+    "json_path": "data/reports/2026-06-20-night.json",
+    "period_start": "2026-06-20T17:00:00+09:00",
+    "period_end": "2026-06-21T00:00:00+09:00",
+    "total_deduped_count": 1,
+    "total_ok_count": 1,
+    "total_review_count": 0,
+    "total_excluded_count": 0,
+    "grade_counts": {
+      "A": 0,
+      "B": 0,
+      "C": 1
+    },
+    "generated_at": "2026-06-22T16:40:03.261986+09:00"
   },
   {
     "base_date": "2026-06-20",
@@ -101,6 +141,26 @@
   },
   {
     "base_date": "2026-06-19",
+    "slot": "night",
+    "label": "'26.6.19. Night Report",
+    "period": "2026-06-19 17:00 ~ 2026-06-20 00:00",
+    "html_path": "reports/2026-06-19-night.html",
+    "json_path": "data/reports/2026-06-19-night.json",
+    "period_start": "2026-06-19T17:00:00+09:00",
+    "period_end": "2026-06-20T00:00:00+09:00",
+    "total_deduped_count": 28,
+    "total_ok_count": 28,
+    "total_review_count": 0,
+    "total_excluded_count": 2,
+    "grade_counts": {
+      "A": 4,
+      "B": 3,
+      "C": 21
+    },
+    "generated_at": "2026-06-22T16:40:03.186755+09:00"
+  },
+  {
+    "base_date": "2026-06-19",
     "slot": "evening",
     "label": "'26.6.19. Evening Report",
     "period": "2026-06-19 08:00 ~ 2026-06-19 17:00",
@@ -138,6 +198,26 @@
       "C": 54
     },
     "generated_at": "2026-06-22T09:38:04.092935+09:00"
+  },
+  {
+    "base_date": "2026-06-18",
+    "slot": "night",
+    "label": "'26.6.18. Night Report",
+    "period": "2026-06-18 17:00 ~ 2026-06-19 00:00",
+    "html_path": "reports/2026-06-18-night.html",
+    "json_path": "data/reports/2026-06-18-night.json",
+    "period_start": "2026-06-18T17:00:00+09:00",
+    "period_end": "2026-06-19T00:00:00+09:00",
+    "total_deduped_count": 21,
+    "total_ok_count": 21,
+    "total_review_count": 0,
+    "total_excluded_count": 0,
+    "grade_counts": {
+      "A": 6,
+      "B": 4,
+      "C": 11
+    },
+    "generated_at": "2026-06-22T16:40:03.107355+09:00"
   },
   {
     "base_date": "2026-06-18",
@@ -181,6 +261,26 @@
   },
   {
     "base_date": "2026-06-17",
+    "slot": "night",
+    "label": "'26.6.17. Night Report",
+    "period": "2026-06-17 17:00 ~ 2026-06-18 00:00",
+    "html_path": "reports/2026-06-17-night.html",
+    "json_path": "data/reports/2026-06-17-night.json",
+    "period_start": "2026-06-17T17:00:00+09:00",
+    "period_end": "2026-06-18T00:00:00+09:00",
+    "total_deduped_count": 0,
+    "total_ok_count": 0,
+    "total_review_count": 0,
+    "total_excluded_count": 0,
+    "grade_counts": {
+      "A": 0,
+      "B": 0,
+      "C": 0
+    },
+    "generated_at": "2026-06-22T16:40:03.028987+09:00"
+  },
+  {
+    "base_date": "2026-06-17",
     "slot": "evening",
     "label": "'26.6.17. Evening Report",
     "period": "2026-06-17 08:00 ~ 2026-06-17 17:00",
@@ -218,6 +318,26 @@
       "C": 0
     },
     "generated_at": "2026-06-22T09:38:01.926332+09:00"
+  },
+  {
+    "base_date": "2026-06-16",
+    "slot": "night",
+    "label": "'26.6.16. Night Report",
+    "period": "2026-06-16 17:00 ~ 2026-06-17 00:00",
+    "html_path": "reports/2026-06-16-night.html",
+    "json_path": "data/reports/2026-06-16-night.json",
+    "period_start": "2026-06-16T17:00:00+09:00",
+    "period_end": "2026-06-17T00:00:00+09:00",
+    "total_deduped_count": 3,
+    "total_ok_count": 3,
+    "total_review_count": 0,
+    "total_excluded_count": 0,
+    "grade_counts": {
+      "A": 0,
+      "B": 1,
+      "C": 2
+    },
+    "generated_at": "2026-06-22T16:40:03.010036+09:00"
   },
   {
     "base_date": "2026-06-16",
@@ -261,6 +381,26 @@
   },
   {
     "base_date": "2026-06-15",
+    "slot": "night",
+    "label": "'26.6.15. Night Report",
+    "period": "2026-06-15 17:00 ~ 2026-06-16 00:00",
+    "html_path": "reports/2026-06-15-night.html",
+    "json_path": "data/reports/2026-06-15-night.json",
+    "period_start": "2026-06-15T17:00:00+09:00",
+    "period_end": "2026-06-16T00:00:00+09:00",
+    "total_deduped_count": 4,
+    "total_ok_count": 4,
+    "total_review_count": 0,
+    "total_excluded_count": 0,
+    "grade_counts": {
+      "A": 0,
+      "B": 2,
+      "C": 2
+    },
+    "generated_at": "2026-06-22T16:40:02.933417+09:00"
+  },
+  {
+    "base_date": "2026-06-15",
     "slot": "evening",
     "label": "'26.6.15. Evening Report",
     "period": "2026-06-15 08:00 ~ 2026-06-15 17:00",
@@ -298,5 +438,25 @@
       "C": 0
     },
     "generated_at": "2026-06-22T09:37:59.737829+09:00"
+  },
+  {
+    "base_date": "2026-06-14",
+    "slot": "night",
+    "label": "'26.6.14. Night Report",
+    "period": "2026-06-14 17:00 ~ 2026-06-15 00:00",
+    "html_path": "reports/2026-06-14-night.html",
+    "json_path": "data/reports/2026-06-14-night.json",
+    "period_start": "2026-06-14T17:00:00+09:00",
+    "period_end": "2026-06-15T00:00:00+09:00",
+    "total_deduped_count": 0,
+    "total_ok_count": 0,
+    "total_review_count": 0,
+    "total_excluded_count": 0,
+    "grade_counts": {
+      "A": 0,
+      "B": 0,
+      "C": 0
+    },
+    "generated_at": "2026-06-22T16:40:02.858440+09:00"
   }
 ]
