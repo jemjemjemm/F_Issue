@@ -24,7 +24,10 @@ def format_report_title(base_date: str, slot: str) -> str:
 
 
 def _process_articles(raw_items: list[dict], start: datetime, end: datetime) -> tuple[list[dict], int]:
-    eligible = [item for item in raw_items if not item.get("published_at") or is_in_period(item.get("published_at"), start, end)]
+    # A report must only contain articles with a verifiable publication time
+    # inside that report's same-day slot. Search results without a publication
+    # time cannot prove that they belong to the requested date, so fail closed.
+    eligible = [item for item in raw_items if is_in_period(item.get("published_at"), start, end)]
     articles = []
     excluded_count = 0
     for item in deduplicate(eligible):

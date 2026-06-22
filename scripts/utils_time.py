@@ -1,7 +1,7 @@
 """Asia/Seoul report-slot and publication-time helpers."""
 from __future__ import annotations
 
-from datetime import date, datetime, time, timedelta
+from datetime import date, datetime, time
 from zoneinfo import ZoneInfo
 
 KST = ZoneInfo("Asia/Seoul")
@@ -36,7 +36,7 @@ def get_period(base_date: date | str, slot: str) -> tuple[datetime, datetime]:
     slot = resolve_slot(slot)
     if slot == "morning":
         return (
-            datetime.combine(day - timedelta(days=1), time(17), KST),
+            datetime.combine(day, time(0), KST),
             datetime.combine(day, time(8), KST),
         )
     return datetime.combine(day, time(8), KST), datetime.combine(day, time(17), KST)
@@ -66,4 +66,3 @@ def is_in_period(value: str | datetime | None, start: datetime, end: datetime) -
 
 def period_label(start: datetime, end: datetime) -> str:
     return f"{start:%Y-%m-%d %H:%M} ~ {end:%Y-%m-%d %H:%M}"
-

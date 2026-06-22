@@ -3,21 +3,21 @@
     "base_date": "2026-06-22",
     "slot": "morning",
     "label": "'26.6.22. Morning Report",
-    "period": "2026-06-21 17:00 ~ 2026-06-22 08:00",
+    "period": "2026-06-22 00:00 ~ 2026-06-22 08:00",
     "html_path": "reports/2026-06-22-morning.html",
     "json_path": "data/reports/2026-06-22-morning.json",
-    "period_start": "2026-06-21T17:00:00+09:00",
+    "period_start": "2026-06-22T00:00:00+09:00",
     "period_end": "2026-06-22T08:00:00+09:00",
-    "total_deduped_count": 34,
-    "total_ok_count": 15,
-    "total_review_count": 19,
-    "total_excluded_count": 4,
+    "total_deduped_count": 12,
+    "total_ok_count": 12,
+    "total_review_count": 0,
+    "total_excluded_count": 1,
     "grade_counts": {
-      "A": 11,
+      "A": 5,
       "B": 0,
-      "C": 23
+      "C": 7
     },
-    "generated_at": "2026-06-22T09:21:33.470405+09:00"
+    "generated_at": "2026-06-22T09:38:06.753196+09:00"
   },
   {
     "base_date": "2026-06-21",
@@ -28,36 +28,36 @@
     "json_path": "data/reports/2026-06-21-evening.json",
     "period_start": "2026-06-21T08:00:00+09:00",
     "period_end": "2026-06-21T17:00:00+09:00",
-    "total_deduped_count": 26,
+    "total_deduped_count": 7,
     "total_ok_count": 7,
-    "total_review_count": 19,
-    "total_excluded_count": 6,
+    "total_review_count": 0,
+    "total_excluded_count": 2,
     "grade_counts": {
-      "A": 7,
+      "A": 2,
       "B": 2,
-      "C": 17
+      "C": 3
     },
-    "generated_at": "2026-06-21T20:24:26.882243+09:00"
+    "generated_at": "2026-06-22T09:38:05.693761+09:00"
   },
   {
     "base_date": "2026-06-21",
     "slot": "morning",
     "label": "'26.6.21. Morning Report",
-    "period": "2026-06-20 17:00 ~ 2026-06-21 08:00",
+    "period": "2026-06-21 00:00 ~ 2026-06-21 08:00",
     "html_path": "reports/2026-06-21-morning.html",
     "json_path": "data/reports/2026-06-21-morning.json",
-    "period_start": "2026-06-20T17:00:00+09:00",
+    "period_start": "2026-06-21T00:00:00+09:00",
     "period_end": "2026-06-21T08:00:00+09:00",
-    "total_deduped_count": 24,
-    "total_ok_count": 3,
-    "total_review_count": 21,
-    "total_excluded_count": 10,
+    "total_deduped_count": 2,
+    "total_ok_count": 2,
+    "total_review_count": 0,
+    "total_excluded_count": 2,
     "grade_counts": {
-      "A": 5,
-      "B": 1,
-      "C": 18
+      "A": 0,
+      "B": 0,
+      "C": 2
     },
-    "generated_at": "2026-06-21T09:21:27.129331+09:00"
+    "generated_at": "2026-06-22T09:38:06.216589+09:00"
   },
   {
     "base_date": "2026-06-20",
@@ -68,36 +68,36 @@
     "json_path": "data/reports/2026-06-20-evening.json",
     "period_start": "2026-06-20T08:00:00+09:00",
     "period_end": "2026-06-20T17:00:00+09:00",
-    "total_deduped_count": 23,
+    "total_deduped_count": 2,
     "total_ok_count": 2,
-    "total_review_count": 21,
-    "total_excluded_count": 8,
+    "total_review_count": 0,
+    "total_excluded_count": 0,
     "grade_counts": {
-      "A": 5,
-      "B": 1,
-      "C": 17
+      "A": 0,
+      "B": 0,
+      "C": 2
     },
-    "generated_at": "2026-06-20T20:43:20.434306+09:00"
+    "generated_at": "2026-06-22T09:38:04.619125+09:00"
   },
   {
     "base_date": "2026-06-20",
     "slot": "morning",
     "label": "'26.6.20. Morning Report",
-    "period": "2026-06-19 17:00 ~ 2026-06-20 08:00",
+    "period": "2026-06-20 00:00 ~ 2026-06-20 08:00",
     "html_path": "reports/2026-06-20-morning.html",
     "json_path": "data/reports/2026-06-20-morning.json",
-    "period_start": "2026-06-19T17:00:00+09:00",
+    "period_start": "2026-06-20T00:00:00+09:00",
     "period_end": "2026-06-20T08:00:00+09:00",
-    "total_deduped_count": 41,
-    "total_ok_count": 28,
-    "total_review_count": 13,
-    "total_excluded_count": 10,
+    "total_deduped_count": 0,
+    "total_ok_count": 0,
+    "total_review_count": 0,
+    "total_excluded_count": 0,
     "grade_counts": {
-      "A": 6,
-      "B": 4,
-      "C": 31
+      "A": 0,
+      "B": 0,
+      "C": 0
     },
-    "generated_at": "2026-06-20T10:49:44.498665+09:00"
+    "generated_at": "2026-06-22T09:38:05.149319+09:00"
   },
   {
     "base_date": "2026-06-19",
@@ -108,36 +108,36 @@
     "json_path": "data/reports/2026-06-19-evening.json",
     "period_start": "2026-06-19T08:00:00+09:00",
     "period_end": "2026-06-19T17:00:00+09:00",
-    "total_deduped_count": 123,
-    "total_ok_count": 114,
-    "total_review_count": 9,
-    "total_excluded_count": 12,
+    "total_deduped_count": 115,
+    "total_ok_count": 115,
+    "total_review_count": 0,
+    "total_excluded_count": 4,
     "grade_counts": {
-      "A": 24,
-      "B": 12,
-      "C": 87
+      "A": 23,
+      "B": 11,
+      "C": 81
     },
-    "generated_at": "2026-06-19T21:16:58.835403+09:00"
+    "generated_at": "2026-06-22T09:38:03.544925+09:00"
   },
   {
     "base_date": "2026-06-19",
     "slot": "morning",
     "label": "'26.6.19. Morning Report",
-    "period": "2026-06-18 17:00 ~ 2026-06-19 08:00",
+    "period": "2026-06-19 00:00 ~ 2026-06-19 08:00",
     "html_path": "reports/2026-06-19-morning.html",
     "json_path": "data/reports/2026-06-19-morning.json",
-    "period_start": "2026-06-18T17:00:00+09:00",
+    "period_start": "2026-06-19T00:00:00+09:00",
     "period_end": "2026-06-19T08:00:00+09:00",
-    "total_deduped_count": 98,
-    "total_ok_count": 90,
-    "total_review_count": 8,
-    "total_excluded_count": 11,
+    "total_deduped_count": 72,
+    "total_ok_count": 72,
+    "total_review_count": 0,
+    "total_excluded_count": 3,
     "grade_counts": {
-      "A": 19,
-      "B": 9,
-      "C": 70
+      "A": 13,
+      "B": 5,
+      "C": 54
     },
-    "generated_at": "2026-06-19T18:01:09.758063+09:00"
+    "generated_at": "2026-06-22T09:38:04.092935+09:00"
   },
   {
     "base_date": "2026-06-18",
@@ -148,36 +148,36 @@
     "json_path": "data/reports/2026-06-18-evening.json",
     "period_start": "2026-06-18T08:00:00+09:00",
     "period_end": "2026-06-18T17:00:00+09:00",
-    "total_deduped_count": 33,
+    "total_deduped_count": 24,
     "total_ok_count": 24,
-    "total_review_count": 9,
-    "total_excluded_count": 10,
+    "total_review_count": 0,
+    "total_excluded_count": 2,
     "grade_counts": {
-      "A": 9,
-      "B": 5,
-      "C": 19
+      "A": 7,
+      "B": 4,
+      "C": 13
     },
-    "generated_at": "2026-06-19T18:01:09.220159+09:00"
+    "generated_at": "2026-06-22T09:38:02.535889+09:00"
   },
   {
     "base_date": "2026-06-18",
     "slot": "morning",
     "label": "'26.6.18. Morning Report",
-    "period": "2026-06-17 17:00 ~ 2026-06-18 08:00",
+    "period": "2026-06-18 00:00 ~ 2026-06-18 08:00",
     "html_path": "reports/2026-06-18-morning.html",
     "json_path": "data/reports/2026-06-18-morning.json",
-    "period_start": "2026-06-17T17:00:00+09:00",
+    "period_start": "2026-06-18T00:00:00+09:00",
     "period_end": "2026-06-18T08:00:00+09:00",
-    "total_deduped_count": 10,
+    "total_deduped_count": 0,
     "total_ok_count": 0,
-    "total_review_count": 10,
-    "total_excluded_count": 12,
+    "total_review_count": 0,
+    "total_excluded_count": 2,
     "grade_counts": {
-      "A": 2,
-      "B": 1,
-      "C": 7
+      "A": 0,
+      "B": 0,
+      "C": 0
     },
-    "generated_at": "2026-06-19T18:01:08.709649+09:00"
+    "generated_at": "2026-06-22T09:38:03.005184+09:00"
   },
   {
     "base_date": "2026-06-17",
@@ -188,36 +188,36 @@
     "json_path": "data/reports/2026-06-17-evening.json",
     "period_start": "2026-06-17T08:00:00+09:00",
     "period_end": "2026-06-17T17:00:00+09:00",
-    "total_deduped_count": 10,
+    "total_deduped_count": 0,
     "total_ok_count": 0,
-    "total_review_count": 10,
-    "total_excluded_count": 8,
+    "total_review_count": 0,
+    "total_excluded_count": 0,
     "grade_counts": {
-      "A": 2,
-      "B": 1,
-      "C": 7
+      "A": 0,
+      "B": 0,
+      "C": 0
     },
-    "generated_at": "2026-06-19T18:01:08.263220+09:00"
+    "generated_at": "2026-06-22T09:38:01.382259+09:00"
   },
   {
     "base_date": "2026-06-17",
     "slot": "morning",
     "label": "'26.6.17. Morning Report",
-    "period": "2026-06-16 17:00 ~ 2026-06-17 08:00",
+    "period": "2026-06-17 00:00 ~ 2026-06-17 08:00",
     "html_path": "reports/2026-06-17-morning.html",
     "json_path": "data/reports/2026-06-17-morning.json",
-    "period_start": "2026-06-16T17:00:00+09:00",
+    "period_start": "2026-06-17T00:00:00+09:00",
     "period_end": "2026-06-17T08:00:00+09:00",
-    "total_deduped_count": 13,
-    "total_ok_count": 3,
-    "total_review_count": 10,
-    "total_excluded_count": 8,
+    "total_deduped_count": 0,
+    "total_ok_count": 0,
+    "total_review_count": 0,
+    "total_excluded_count": 0,
     "grade_counts": {
-      "A": 2,
-      "B": 2,
-      "C": 9
+      "A": 0,
+      "B": 0,
+      "C": 0
     },
-    "generated_at": "2026-06-19T18:01:07.737483+09:00"
+    "generated_at": "2026-06-22T09:38:01.926332+09:00"
   },
   {
     "base_date": "2026-06-16",
@@ -228,36 +228,36 @@
     "json_path": "data/reports/2026-06-16-evening.json",
     "period_start": "2026-06-16T08:00:00+09:00",
     "period_end": "2026-06-16T17:00:00+09:00",
-    "total_deduped_count": 13,
+    "total_deduped_count": 3,
     "total_ok_count": 3,
-    "total_review_count": 10,
-    "total_excluded_count": 9,
+    "total_review_count": 0,
+    "total_excluded_count": 1,
     "grade_counts": {
-      "A": 3,
-      "B": 1,
-      "C": 9
+      "A": 1,
+      "B": 0,
+      "C": 2
     },
-    "generated_at": "2026-06-19T18:01:07.223064+09:00"
+    "generated_at": "2026-06-22T09:38:00.272509+09:00"
   },
   {
     "base_date": "2026-06-16",
     "slot": "morning",
     "label": "'26.6.16. Morning Report",
-    "period": "2026-06-15 17:00 ~ 2026-06-16 08:00",
+    "period": "2026-06-16 00:00 ~ 2026-06-16 08:00",
     "html_path": "reports/2026-06-16-morning.html",
     "json_path": "data/reports/2026-06-16-morning.json",
-    "period_start": "2026-06-15T17:00:00+09:00",
+    "period_start": "2026-06-16T00:00:00+09:00",
     "period_end": "2026-06-16T08:00:00+09:00",
-    "total_deduped_count": 16,
-    "total_ok_count": 6,
-    "total_review_count": 10,
-    "total_excluded_count": 8,
+    "total_deduped_count": 2,
+    "total_ok_count": 2,
+    "total_review_count": 0,
+    "total_excluded_count": 0,
     "grade_counts": {
-      "A": 3,
-      "B": 4,
-      "C": 9
+      "A": 1,
+      "B": 1,
+      "C": 0
     },
-    "generated_at": "2026-06-19T18:01:06.700542+09:00"
+    "generated_at": "2026-06-22T09:38:00.828464+09:00"
   },
   {
     "base_date": "2026-06-15",
@@ -268,35 +268,35 @@
     "json_path": "data/reports/2026-06-15-evening.json",
     "period_start": "2026-06-15T08:00:00+09:00",
     "period_end": "2026-06-15T17:00:00+09:00",
-    "total_deduped_count": 55,
+    "total_deduped_count": 45,
     "total_ok_count": 45,
-    "total_review_count": 10,
-    "total_excluded_count": 12,
+    "total_review_count": 0,
+    "total_excluded_count": 4,
     "grade_counts": {
-      "A": 9,
-      "B": 4,
-      "C": 42
+      "A": 7,
+      "B": 3,
+      "C": 35
     },
-    "generated_at": "2026-06-19T18:01:06.175355+09:00"
+    "generated_at": "2026-06-22T09:37:59.165172+09:00"
   },
   {
     "base_date": "2026-06-15",
     "slot": "morning",
     "label": "'26.6.15. Morning Report",
-    "period": "2026-06-14 17:00 ~ 2026-06-15 08:00",
+    "period": "2026-06-15 00:00 ~ 2026-06-15 08:00",
     "html_path": "reports/2026-06-15-morning.html",
     "json_path": "data/reports/2026-06-15-morning.json",
-    "period_start": "2026-06-14T17:00:00+09:00",
+    "period_start": "2026-06-15T00:00:00+09:00",
     "period_end": "2026-06-15T08:00:00+09:00",
-    "total_deduped_count": 10,
+    "total_deduped_count": 0,
     "total_ok_count": 0,
-    "total_review_count": 10,
-    "total_excluded_count": 9,
+    "total_review_count": 0,
+    "total_excluded_count": 1,
     "grade_counts": {
-      "A": 2,
-      "B": 1,
-      "C": 7
+      "A": 0,
+      "B": 0,
+      "C": 0
     },
-    "generated_at": "2026-06-19T18:01:05.649120+09:00"
+    "generated_at": "2026-06-22T09:37:59.737829+09:00"
   }
 ]

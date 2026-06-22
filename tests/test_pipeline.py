@@ -17,7 +17,7 @@ from collect_news import KEYWORDS
 class TimeTests(unittest.TestCase):
     def test_morning_period_is_half_open(self):
         start, end = get_period(date(2026, 6, 19), "morning")
-        self.assertEqual(start.isoformat(), "2026-06-18T17:00:00+09:00")
+        self.assertEqual(start.isoformat(), "2026-06-19T00:00:00+09:00")
         self.assertEqual(end.isoformat(), "2026-06-19T08:00:00+09:00")
         self.assertTrue(is_in_period(start, start, end))
         self.assertFalse(is_in_period(end, start, end))
@@ -119,7 +119,7 @@ class ReportTests(unittest.TestCase):
         self.assertEqual(format_report_title("2026-06-19", "morning"), "'26.6.19. Morning Report")
         self.assertEqual(format_report_title("2026-07-03", "evening"), "'26.7.3. Evening Report")
 
-    def test_unknown_publication_time_is_retained_for_review(self):
+    def test_unknown_publication_time_is_removed(self):
         start, end = get_period("2026-06-19", "morning")
         item = {
             "portal": "google", "query": "유가 담합", "title": "정유사 담합 조사",
@@ -127,9 +127,17 @@ class ReportTests(unittest.TestCase):
             "collected_at": "2026-06-19T08:10:00+09:00", "snippet": "공정위가 유가 담합을 조사한다.",
         }
         articles = process_articles([item], start, end)
-        self.assertEqual(len(articles), 1)
-        self.assertEqual(articles[0]["published_at_status"], "unknown")
-        self.assertEqual(articles[0]["quality_status"], "review")
+        self.assertEqual(articles, [])
+
+    def test_previous_day_article_is_removed_from_morning_report(self):
+        start, end = get_period("2026-06-19", "morning")
+        item = {
+            "portal": "google", "query": "유가 담합", "title": "정유사 담합 조사",
+            "url": "https://example.com/previous-day", "source": "연합뉴스",
+            "published_at": "2026-06-18T23:59:59+09:00",
+            "collected_at": "2026-06-19T08:10:00+09:00", "snippet": "",
+        }
+        self.assertEqual(process_articles([item], start, end), [])
 
     def test_known_out_of_period_article_is_removed(self):
         start, end = get_period("2026-06-19", "morning")
