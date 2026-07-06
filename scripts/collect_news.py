@@ -29,6 +29,7 @@ HEADERS = {
     "User-Agent": "Mozilla/5.0 (compatible; F-Issue-Report/1.0; +https://jemjemjemm.github.io/F_issue/)"
 }
 TIMEOUT = 20
+RELATIVE_TIME_SOURCE = re.compile(r"^\d+\s*(?:분|시간|일)\s*전$")
 
 
 def clean_text(value: str) -> str:
@@ -61,6 +62,40 @@ def raw_item(portal: str, query: str, title: str, url: str, source: str = "", pu
         "source": clean_text(source), "published_at": iso_time(published_at),
         "snippet": clean_text(snippet), "collected_at": now_kst().isoformat(), "raw": raw or {},
     }
+
+
+def _source_from_site_name(value: str) -> str:
+    site_name = clean_text(value)
+    if "|" in site_name:
+        site_name = site_name.split("|")[-1].strip()
+    return site_name
+
+
+def _source_needs_enrichment(source: str) -> bool:
+    value = clean_text(source)
+    return not value or bool(RELATIVE_TIME_SOURCE.fullmatch(value))
+
+
+def resolve_article_source(url: str) -> str:
+    if not url:
+        return ""
+    try:
+        response = requests.get(url, headers=HEADERS, timeout=TIMEOUT, allow_redirects=True)
+        response.raise_for_status()
+    except requests.RequestException:
+        return ""
+    soup = BeautifulSoup(response.text, "html.parser")
+    for attrs in (
+        {"property": "og:site_name"},
+        {"name": "article:media_name"},
+        {"name": "twitter:site"},
+        {"name": "author"},
+    ):
+        tag = soup.find("meta", attrs=attrs)
+        candidate = _source_from_site_name(tag.get("content", "")) if tag else ""
+        if candidate and not _source_needs_enrichment(candidate):
+            return candidate
+    return ""
 
 
 def collect_naver_api(query: str) -> list[dict]:
@@ -120,7 +155,11 @@ def collect_daum_public(query: str) -> list[dict]:
         source_node = node.select_one(".f_nb, .txt_info, .item-source, .cont_info")
         date_node = node.select_one(".f_nb.date, .gem-subinfo, .txt_date")
         snippet_node = node.select_one(".f_eb, .desc, .item-contents")
-        results.append(raw_item("daum", query, title, urljoin("https://search.daum.net", link.get("href", "")), source_node.get_text() if source_node else "", date_node.get_text() if date_node else "", snippet_node.get_text() if snippet_node else ""))
+        article_url = urljoin("https://search.daum.net", link.get("href", ""))
+        source_text = source_node.get_text() if source_node else ""
+        if _source_needs_enrichment(source_text):
+            source_text = resolve_article_source(article_url) or ""
+        results.append(raw_item("daum", query, title, article_url, source_text, date_node.get_text() if date_node else "", snippet_node.get_text() if snippet_node else ""))
     if not results and not any(marker in soup.get_text(" ", strip=True) for marker in ("검색결과가 없습니다", "검색 결과가 없습니다")):
         raise ValueError("Daum news result selector returned 0 nodes")
     return results
