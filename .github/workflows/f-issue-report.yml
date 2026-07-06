@@ -42,6 +42,7 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     env:
       TZ: Asia/Seoul
+      ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
       TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
       TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
       TELEGRAM_NOTIFY_ON_SUCCESS: ${{ vars.TELEGRAM_NOTIFY_ON_SUCCESS || 'false' }}
