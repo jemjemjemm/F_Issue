@@ -72,6 +72,13 @@ function getTodayKSTDateString() {
   }).format(new Date());
 }
 
+function renderReportSummary(reportData) {
+  const summary = reportData?.summary;
+  if (!summary) return "";
+  const lines = Array.isArray(summary) ? summary : [summary];
+  return `<section class="report-summary"><strong>요약</strong>${lines.map(line => `<p>${escapeHTML(line)}</p>`).join("")}</section>`;
+}
+
 async function fetchJSON(path) {
   const response = await fetch(path, {cache: "no-store"});
   if (!response.ok) throw new Error(`${path}을(를) 불러오지 못했습니다. (${response.status})`);
@@ -146,7 +153,7 @@ function renderGradeSection(grade, title, articles) {
 function renderSingleReportBody(reportData) {
   const articles = reportData.articles || [];
   const grouped = groupArticlesByGradeAndSource(articles);
-  return `${renderGradeSection("A", gradeTitles.A, grouped.A)}
+  return `${renderReportSummary(reportData)}${renderGradeSection("A", gradeTitles.A, grouped.A)}
     ${renderGradeSection("B", gradeTitles.B, grouped.B)}
     ${renderGradeSection("C", gradeTitles.C, grouped.C)}`;
 }

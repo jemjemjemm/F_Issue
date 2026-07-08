@@ -8,16 +8,16 @@
     "json_path": "data/reports/2026-07-08-evening.json",
     "period_start": "2026-07-08T08:00:00+09:00",
     "period_end": "2026-07-08T17:00:00+09:00",
-    "total_deduped_count": 1,
-    "total_ok_count": 1,
+    "total_deduped_count": 15,
+    "total_ok_count": 15,
     "total_review_count": 0,
-    "total_excluded_count": 1,
+    "total_excluded_count": 24,
     "grade_counts": {
-      "A": 1,
-      "B": 0,
-      "C": 0
+      "A": 3,
+      "B": 3,
+      "C": 9
     },
-    "generated_at": "2026-07-08T08:16:58.455827+09:00"
+    "generated_at": "2026-07-08T17:03:56.931392+09:00"
   },
   {
     "base_date": "2026-07-08",
