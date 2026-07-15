@@ -41,6 +41,26 @@
   },
   {
     "base_date": "2026-07-15",
+    "slot": "evening",
+    "label": "'26.7.15. Evening Report",
+    "period": "2026-07-15 08:00 ~ 2026-07-15 17:00",
+    "html_path": "reports/2026-07-15-evening.html",
+    "json_path": "data/reports/2026-07-15-evening.json",
+    "period_start": "2026-07-15T08:00:00+09:00",
+    "period_end": "2026-07-15T17:00:00+09:00",
+    "total_deduped_count": 55,
+    "total_ok_count": 55,
+    "total_review_count": 0,
+    "total_excluded_count": 9,
+    "grade_counts": {
+      "A": 11,
+      "B": 4,
+      "C": 40
+    },
+    "generated_at": "2026-07-15T17:49:22.320402+09:00"
+  },
+  {
+    "base_date": "2026-07-15",
     "slot": "morning",
     "label": "'26.7.15. Morning Report",
     "period": "2026-07-15 00:00 ~ 2026-07-15 08:00",
@@ -448,16 +468,16 @@
     "json_path": "data/reports/2026-07-08-evening.json",
     "period_start": "2026-07-08T08:00:00+09:00",
     "period_end": "2026-07-08T17:00:00+09:00",
-    "total_deduped_count": 15,
-    "total_ok_count": 15,
+    "total_deduped_count": 36,
+    "total_ok_count": 36,
     "total_review_count": 0,
-    "total_excluded_count": 24,
+    "total_excluded_count": 3,
     "grade_counts": {
-      "A": 3,
-      "B": 3,
-      "C": 9
+      "A": 11,
+      "B": 6,
+      "C": 19
     },
-    "generated_at": "2026-07-08T17:03:56.931392+09:00"
+    "generated_at": "2026-07-08T19:29:41.330888+09:00"
   },
   {
     "base_date": "2026-07-08",
