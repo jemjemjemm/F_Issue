@@ -1,6 +1,26 @@
 [
   {
     "base_date": "2026-08-05",
+    "slot": "evening",
+    "label": "'26.8.5. Evening Report",
+    "period": "2026-08-05 08:00 ~ 2026-08-05 17:00",
+    "html_path": "reports/2026-08-05-evening.html",
+    "json_path": "data/reports/2026-08-05-evening.json",
+    "period_start": "2026-08-05T08:00:00+09:00",
+    "period_end": "2026-08-05T17:00:00+09:00",
+    "total_deduped_count": 66,
+    "total_ok_count": 66,
+    "total_review_count": 0,
+    "total_excluded_count": 11,
+    "grade_counts": {
+      "A": 18,
+      "B": 11,
+      "C": 37
+    },
+    "generated_at": "2026-08-05T17:09:37.021498+09:00"
+  },
+  {
+    "base_date": "2026-08-05",
     "slot": "morning",
     "label": "'26.8.5. Morning Report",
     "period": "2026-08-05 00:00 ~ 2026-08-05 08:00",
