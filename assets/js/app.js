@@ -210,7 +210,7 @@ function bindReturnTodayButton() {
   document.querySelectorAll("[data-return-today]").forEach(button => button.addEventListener("click", showTodayReport));
 }
 
-function renderDateReportsAccordion(baseDate, loadedReports, mode) {
+function renderDateReportsAccordion(baseDate, loadedReports, mode, preferredSlot = null) {
   const root = $("#report-root");
   if (!loadedReports.length) {
     root.innerHTML = `<section class="empty-report-card"><h2>${escapeHTML(formatShortDate(baseDate))}</h2><p>${baseDate === state.today ? "오늘 생성된 리포트가 아직 없습니다." : "해당 날짜의 리포트가 없습니다."}</p>${mode === "past" ? `<button class="return-today-btn" type="button" data-return-today>오늘 기사 보기</button>` : ""}</section>`;
@@ -218,9 +218,10 @@ function renderDateReportsAccordion(baseDate, loadedReports, mode) {
     return;
   }
   const latestSlot = loadedReports.some(item => item.meta.slot === "night") ? "night" : loadedReports.some(item => item.meta.slot === "evening") ? "evening" : "morning";
+  const openSlot = preferredSlot || (mode === "today" ? latestSlot : null);
   const items = loadedReports
     .sort((a, b) => sortReportsBySlotPriority(a.meta, b.meta))
-    .map(({meta, data}) => renderReportAccordionItem(meta, data, mode === "today" && meta.slot === latestSlot))
+    .map(({meta, data}) => renderReportAccordionItem(meta, data, meta.slot === openSlot))
     .join("");
   root.innerHTML = `<section class="selected-date-report">
     <div class="selected-date-header"><div><p class="eyebrow dark">FULL COVERAGE</p><div class="selected-date-title"><h2>${escapeHTML(formatShortDate(baseDate))}</h2>${renderDailySummary(loadedReports)}</div></div>${mode === "past" ? `<button class="return-today-btn" type="button" data-return-today>오늘 기사 보기</button>` : ""}</div>
@@ -236,7 +237,7 @@ function markSelectedCalendarDate(baseDate) {
   renderCalendar($("#calendar-grid"), buildCalendar(state.currentYear, state.currentMonth));
 }
 
-async function loadAndRenderDate(baseDate, {scroll = false} = {}) {
+async function loadAndRenderDate(baseDate, {scroll = false, preferredSlot = null} = {}) {
   const reports = getReportsByDate(baseDate);
   state.selectedDate = baseDate;
   state.viewingMode = baseDate === state.today ? "today" : "past";
@@ -245,7 +246,7 @@ async function loadAndRenderDate(baseDate, {scroll = false} = {}) {
   const loadedReports = results.filter(result => result.status === "fulfilled").map(result => result.value);
   results.filter(result => result.status === "rejected").forEach(result => console.error("[F-Issue] failed to load report:", result.reason));
   state.loadedReports = loadedReports;
-  renderDateReportsAccordion(baseDate, loadedReports, state.viewingMode);
+  renderDateReportsAccordion(baseDate, loadedReports, state.viewingMode, preferredSlot);
   $("#loading").hidden = true;
   $("#error-panel").hidden = true;
   $("#dashboard").hidden = false;
@@ -331,10 +332,15 @@ async function initDashboard() {
   try {
     await loadReportIndex();
     state.today = getTodayKSTDateString();
-    const [year, month] = state.today.split("-").map(Number);
+    const requestedPath = new URLSearchParams(location.search).get("report");
+    const requestedReport = isReportPath(requestedPath)
+      ? state.reportIndex.find(item => item.json_path === requestedPath)
+      : null;
+    const initialDate = requestedReport?.base_date || state.today;
+    const [year, month] = initialDate.split("-").map(Number);
     state.currentYear = year;
     state.currentMonth = month - 1;
-    await loadAndRenderDate(state.today);
+    await loadAndRenderDate(initialDate, {preferredSlot: requestedReport?.slot || null});
   } catch (error) {
     showError(error);
   }
