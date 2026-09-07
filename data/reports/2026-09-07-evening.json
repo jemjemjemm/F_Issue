@@ -1,0 +1,80 @@
+{
+  "title": "F-Issue Report",
+  "subtitle": "뉴스 모니터링",
+  "base_date": "2026-09-07",
+  "slot": "evening",
+  "period_start": "2026-09-07T08:00:00+09:00",
+  "period_end": "2026-09-07T17:00:00+09:00",
+  "period_label": "2026-09-07 08:00 ~ 2026-09-07 17:00",
+  "generated_at": "2026-09-07T23:13:38.831064+09:00",
+  "keywords": [
+    "유가담합",
+    "유가 담합",
+    "정유사 담합",
+    "기름값 담합",
+    "석유 담합",
+    "휘발유 담합",
+    "경유 담합",
+    "주유소 담합",
+    "정유업계 담합",
+    "석유제품 담합",
+    "유류가격 담합",
+    "공정위 유가 담합",
+    "공정거래위원회 정유사 담합"
+  ],
+  "total_raw_count": 1564,
+  "total_deduped_count": 1,
+  "total_ok_count": 1,
+  "total_review_count": 0,
+  "total_excluded_count": 0,
+  "grade_counts": {
+    "A": 0,
+    "B": 0,
+    "C": 1
+  },
+  "portal_counts": {
+    "naver": 130,
+    "daum": 260,
+    "google": 1174
+  },
+  "query_counts": {
+    "유가 담합": 1,
+    "유가담합": 1
+  },
+  "collection_warnings": [],
+  "telegram_alert_log": [],
+  "articles": [
+    {
+      "title": "제넨셀 첫 투자자는 KH필룩스... 김승원 청탁 의혹, 쌍방울 배상윤·대선...새 창 열림",
+      "url": "https://www.thepublic.kr/news/articleView.html?idxno=317769",
+      "source": "새 창 열림",
+      "published_at": "2026-09-07T13:13:03.363335+09:00",
+      "snippet": "유가증권시장 상장사였던 KH필룩스는 2020년 10월 유상증자 추진 공시에서 제넨셀에 투자를 검토하고 있다고 밝혔다. 제넨셀은 인도 임상 승인 소식으로... KH그룹은 2021년 5~6월 강원도개발공사의 알펜시아리조트 매각 입찰에 계열사 여러 곳을 동원해 담합한 혐의로 공정거래위원회로부터 510억원의 과징금을... 새 창 열림",
+      "collected_at": "2026-09-07T23:13:03.363352+09:00",
+      "normalized_title": "제넨셀 첫 투자자는 KH필룩스... 김승원 청탁 의혹, 쌍방울 배상윤·대선...새 창 열림",
+      "source_normalized": "새 창 열림",
+      "duplicate_key": "새 창 열림::제넨셀 첫 투자자는 kh필룩스... 김승원 청탁 의혹, 쌍방울 배상윤·대선...새 창 열림",
+      "portals": [
+        "naver"
+      ],
+      "queries": [
+        "유가 담합",
+        "유가담합"
+      ],
+      "duplicate_count": 1,
+      "canonical_url": "https://www.thepublic.kr/news/articleView.html?idxno=317769",
+      "id": "d7d032fc074f72cb",
+      "grade": "C",
+      "published_at_status": "known",
+      "matched_keywords": [
+        "유가",
+        "공정거래위원회",
+        "담합",
+        "과징금"
+      ],
+      "quality_status": "ok",
+      "status_label": "정상",
+      "status_reason": "유가담합 관련 맥락 확인"
+    }
+  ]
+}
