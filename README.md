@@ -1,5 +1,11 @@
 # F-Issue Report
 
+> 이 저장소의 리포트 생성 기능은 `daily-energy-dashboard/oil/`로 이전합니다. 전환 후 이 저장소는 기존 GitHub Pages 주소를 새 통합 주소로 연결하고 과거 이력을 보존하는 용도로만 유지합니다.
+>
+> 기존 workflow를 외부에서 호출하고 있었다면 대상 저장소를 `jemjemjemm/daily-energy-dashboard`, workflow 파일을 `.github/workflows/oil-report.yml`로 변경해야 합니다. 입력값 `report_slot`, `base_date`, `force_refresh`는 동일합니다. 새 workflow에 08:10·17:10 KST 예약이 내장되어 있으므로 외부 예약 호출과 중복되지 않게 하나만 유지합니다.
+
+> 이 저장소의 리포트 생성 기능은 `daily-energy-dashboard/oil/`로 이전합니다. 전환 후 이 저장소는 기존 GitHub Pages 주소를 새 통합 주소로 연결하고 과거 이력을 보존하는 용도로만 유지합니다.
+
 `유가담합` 관련 뉴스를 네이버뉴스·다음뉴스·구글뉴스에서 매일 두 차례 전수 검색하고, 동일 제목과 동일 언론사인 결과만 합쳐 A/B/C 매체 등급별로 보여주는 정적 뉴스 모니터링 대시보드입니다.
 
 - GitHub Pages: https://jemjemjemm.github.io/F_issue/
