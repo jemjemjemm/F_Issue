@@ -1,83 +1,40 @@
-# F-Issue Report
+# F_Issue 이전 주소 보존 저장소
 
-> 이 저장소의 리포트 생성 기능은 `daily-energy-dashboard/oil/`로 이전합니다. 전환 후 이 저장소는 기존 GitHub Pages 주소를 새 통합 주소로 연결하고 과거 이력을 보존하는 용도로만 유지합니다.
->
-> 기존 workflow를 외부에서 호출하고 있었다면 대상 저장소를 `jemjemjemm/daily-energy-dashboard`, workflow 파일을 `.github/workflows/oil-report.yml`로 변경해야 합니다. 입력값 `report_slot`, `base_date`, `force_refresh`는 동일합니다. 새 workflow에 08:10·17:10 KST 예약이 내장되어 있으므로 외부 예약 호출과 중복되지 않게 하나만 유지합니다.
+유가 리포트 운영은 2026-09-07에 `jemjemjemm/daily-energy-dashboard`로 통합되었습니다. 이 저장소는 기존 GitHub Pages 주소의 리다이렉트와 과거 Git 이력 보존만 담당합니다.
 
-> 이 저장소의 리포트 생성 기능은 `daily-energy-dashboard/oil/`로 이전합니다. 전환 후 이 저장소는 기존 GitHub Pages 주소를 새 통합 주소로 연결하고 과거 이력을 보존하는 용도로만 유지합니다.
+## 현재 주소
 
-`유가담합` 관련 뉴스를 네이버뉴스·다음뉴스·구글뉴스에서 매일 두 차례 전수 검색하고, 동일 제목과 동일 언론사인 결과만 합쳐 A/B/C 매체 등급별로 보여주는 정적 뉴스 모니터링 대시보드입니다.
+- 기존 주소: <https://jemjemjemm.github.io/F_Issue/>
+- 새 유가 주소: <https://jemjemjemm.github.io/daily-energy-dashboard/oil/>
+- 통합 Daily 주소: <https://jemjemjemm.github.io/daily-energy-dashboard/>
 
-- GitHub Pages: https://jemjemjemm.github.io/F_issue/
-- 기준 시간대: `Asia/Seoul`
-- 메인 화면: 저장소 루트의 `index.html`
+기존 루트는 새 유가 주소로 이동합니다. `reports/YYYY-MM-DD-SLOT.html` 형식의 기존 개별 주소도 `data/reports/YYYY-MM-DD-SLOT.json` 선택값을 유지한 채 새 유가 화면으로 이동합니다.
 
-## 검색 범위
+## 자동화 상태
 
-모든 포털에서 다음 13개 검색어를 각각 조회합니다.
+이 저장소에서는 더 이상 데이터를 생성하지 않습니다.
 
-`유가담합`, `유가 담합`, `정유사 담합`, `기름값 담합`, `석유 담합`, `휘발유 담합`, `경유 담합`, `주유소 담합`, `정유업계 담합`, `석유제품 담합`, `유류가격 담합`, `공정위 유가 담합`, `공정거래위원회 정유사 담합`
+- 기존 `.github/workflows/f-issue-report.yml`: 삭제됨
+- 예약 실행: 없음
+- push 기반 자동 실행: 없음
+- `.github/workflows/redirect-pages.yml`: 리다이렉트 페이지 복구가 필요할 때만 사람이 `workflow_dispatch`로 수동 실행
 
-네이버 API 자격정보가 있으면 공식 검색 API를 우선 사용하고, 없으면 공개 뉴스 검색을 사용합니다. 다음은 공개 뉴스 검색, 구글은 Google News RSS를 사용합니다. 모든 원본 검색 결과는 `data/raw/`에 보관됩니다. 개별 포털·검색어 수집 실패는 숨기지 않고 구조화된 `collection_warnings`에 기록합니다.
-
-## 실행 시간과 시간 범위
-
-GitHub Actions cron은 주말을 포함해 매일 실행됩니다.
-
-- Morning: 전일 17:00 이상 ~ 기준일 08:00 미만, 08:10 KST 실행 (`23:10 UTC`)
-- Evening: 기준일 08:00 이상 ~ 17:00 미만, 17:10 KST 실행 (`08:10 UTC`)
-
-발행시각이 없는 검색 결과는 버리지 않고 `검토필요`로 유지합니다. 발행시각이 확인되며 해당 반개구간 밖인 기사만 현재 리포트에서 제외합니다.
-
-수동 실행:
-
-```bash
-pip install -r requirements.txt
-python scripts/collect_news.py --slot morning --base-date 2026-06-19 --force-refresh true
-python scripts/build_report.py --slot morning --base-date 2026-06-19
-python -m unittest discover -s tests -v
-```
-
-Actions 탭의 **F-Issue Report → Run workflow**에서도 `report_slot`, `base_date`, `force_refresh`를 지정할 수 있습니다. 예약 실행은 KST 현재 시각으로 slot과 기준일을 자동 결정합니다.
-
-## 데이터와 중복 기준
+모든 Daily·유가 데이터 생성과 정기 배포는 `daily-energy-dashboard`에서 수행합니다. 유가 수집 workflow는 다음 파일 하나입니다.
 
 ```text
-data/raw/YYYY-MM-DD-SLOT-raw.json       포털 검색 원본
-data/reports/YYYY-MM-DD-SLOT.json       정제된 전체 기사 리포트
-data/report-index.json                  Calendar 및 최신 리포트 색인
-reports/YYYY-MM-DD-SLOT.html            해당 리포트 진입 링크
+jemjemjemm/daily-energy-dashboard/.github/workflows/oil-report.yml
 ```
 
-비교용 제목에서 공백과 `[속보]`, `[단독]`, `(종합)`, `[그래픽]`, `[포토]` 등을 정리한 뒤 `정규화 언론사::정규화 제목`이 같을 때만 하나로 합칩니다. 포털이 달라도 이 두 값이 같으면 `portals`와 `queries`를 합치며, 같은 제목이라도 언론사가 다르면 별개 기사로 유지합니다. 원문 URL을 확인할 수 있으면 포털 URL보다 우선합니다.
+외부 스케줄러나 봇이 과거 workflow를 호출하고 있었다면 저장소와 파일 경로를 위 대상으로 변경해야 합니다. 새 workflow 자체에 08:10·17:10 KST 예약이 있으므로 외부 예약을 중복 등록하지 않습니다.
 
-## 매체 등급과 품질 상태
+## 보존 파일
 
-- A: 연합뉴스, 한국경제, 매일경제, 서울경제, 이데일리, 머니투데이, 아시아경제, 파이낸셜뉴스, 중앙일보, 조선일보, 동아일보, 한겨레, 경향신문, 한국일보, 뉴스1, 뉴시스
-- B: 국민일보, 문화일보, 세계일보, 헤럴드경제, 이투데이, 아시아투데이, 전자신문, 비즈워치, 조세일보, 데일리안, 한스경제, 더구루, 신아일보, 국제신문, 에너지경제, 매일일보, SBS, KBS, MBC, YTN, JTBC, MBN, 채널A, TV조선
-- C: 위 목록에 없는 모든 매체. C등급도 누락하지 않습니다.
+`data/`, `reports/`, 수집 스크립트와 테스트는 과거 이력 확인 및 롤백을 위해 Git 기록에 남아 있습니다. 현재 운영 데이터의 기준으로 사용하거나 이 저장소에서 다시 생성하지 않습니다.
 
-모든 항목은 언론사별 목록 안에 함께 표시됩니다.
+## 배포와 롤백
 
-- `정상`: 유가·석유 맥락과 담합·공정위 맥락이 명확함
-- `검토필요`: 관련성이 애매하거나 발행시각·언론사·링크 중 일부가 불완전함
-- `제외`: 인사·부고·일정·스포츠·연예·생활정보·광고·비관련 담합 등 명백히 비관련/저품질임. 화면에서 숨기지는 않음
+GitHub Pages Source는 GitHub Actions입니다. 현재 리다이렉트 artifact는 이미 배포됐으며, 이후에는 자동 배포하지 않습니다.
 
-## Calendar와 0건 리포트
+전환 전 기준점, 최신 데이터 보존 기준점, 리다이렉트 병합 커밋과 복구 순서는 [ROLLBACK_POINTS_2026-09-07.md](ROLLBACK_POINTS_2026-09-07.md)에 기록합니다.
 
-화면 맨 아래 Calendar는 `data/report-index.json`을 읽습니다. 리포트가 있는 날짜에는 M(Morning), E(Evening), 기사 수가 표시됩니다. 날짜를 누른 뒤 slot 버튼을 선택하면 상단 요약과 언론사별 전체 목록이 해당 과거 리포트로 교체됩니다. 이전 달·다음 달·이번 달 이동을 지원합니다.
-
-검색 결과가 0건이어도 JSON, HTML, 색인을 모두 생성하므로 Calendar에서 조회할 수 있습니다. 0건과 수집 경고가 함께 있으면 누락 가능성을 Telegram으로 알립니다.
-
-## Telegram과 GitHub Secrets
-
-수집 경고 또는 파이프라인/Pages 배포 실패 시 쉬운 한국어 설명을 보냅니다. 성공 알림은 저장소 Variable `TELEGRAM_NOTIFY_ON_SUCCESS=true`일 때만 보냅니다.
-
-- 알림에 필요: `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`
-- 선택 API: `NAVER_CLIENT_ID`, `NAVER_CLIENT_SECRET`, `SERPAPI_KEY`, `GOOGLE_CSE_KEY`, `GOOGLE_CSE_ID`
-
-Telegram 자격정보가 없으면 알림만 건너뛰며 리포트 생성은 계속됩니다. API 관련 값이 없어도 공개 검색/RSS fallback으로 수집합니다.
-
-## GitHub Pages 배포
-
-Repository **Settings → Pages → Source**를 **GitHub Actions**로 설정합니다. 워크플로는 생성 데이터를 commit한 후 `index.html`, `assets/`, `data/`, `reports/`만 `_site/`에 복사해 Pages artifact로 배포합니다. 따라서 스크립트, raw 이외의 개발 파일, `.git`은 공개 artifact에 포함되지 않습니다(리포트 재현성을 위한 `data/raw`는 현재 `data`와 함께 공개됩니다).
+리다이렉트만 되돌릴 때는 병합 커밋 `43cea06cebe77de35b05be195b35646578368fce`를 mainline parent 1로 revert하면, 최신 수집 데이터를 포함한 `ab4a1b51759432b782f46e819744ea83d5d9a362` 기준 상태로 돌아갑니다.

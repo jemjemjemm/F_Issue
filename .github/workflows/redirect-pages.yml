@@ -1,14 +1,6 @@
 name: Deploy redirect to unified report
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - "index.html"
-      - "reports/**"
-      - "data/report-index.json"
-      - "data/reports/**"
-      - ".github/workflows/redirect-pages.yml"
   workflow_dispatch:
 
 permissions:
