@@ -1,0 +1,45 @@
+name: Deploy redirect to unified report
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "index.html"
+      - "reports/**"
+      - "data/report-index.json"
+      - "data/reports/**"
+      - ".github/workflows/redirect-pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare redirect site
+        run: |
+          mkdir -p _site/data
+          cp index.html _site/
+          cp -R reports _site/
+          cp data/report-index.json _site/data/
+          cp -R data/reports _site/data/
+          touch _site/.nojekyll
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+      - name: Deploy GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
